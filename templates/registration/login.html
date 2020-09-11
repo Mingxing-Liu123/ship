@@ -1,0 +1,42 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <p>&nbsp;</p>
+    {% if form.errors %}
+        <p>Your username and password didn't match.Please try again.</p>
+    {% endif %}
+    
+    {% if next %}  <!--登录之后-->
+        {% if user.is_authenticated %}
+            <p>Your accout doesn't have access to this page.To proceed,
+                Please login with an account that has access.
+            </p>
+        {% else %}
+            <p>Please login to see this page.</p>
+        {% endif %}
+    {% endif %}
+    
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;{{form.username.label_tag}}</td>
+            <td>&nbsp;&nbsp;{{form.username}}</td>
+        </div>
+
+        <div>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;{{form.password.label_tag}}</td>
+            <td>&nbsp;&nbsp;{{form.password}}</td>
+        </div>
+
+        <div>
+            &nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="Reset" />
+            &nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Login" />
+            &nbsp;&nbsp;&nbsp;&nbsp;<input type="hidden" name="next" value="{{next}}" />
+
+        </div>
+        
+        <p><a href="#">忘记密码?</a></p>
+
+    </form>
+
+{% endblock %}

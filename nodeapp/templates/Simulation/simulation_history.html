@@ -1,0 +1,58 @@
+{% extends "base_generic.html" %} 
+<!--登录之后才有权限进入该界面-->
+{% block content %}
+    <p>&nbsp;</p>
+    <h2 style="text-align: center">仿真历史</h2>
+
+    <hr>
+    <div class="result_table">
+    {% if simulationparament_list %}
+    <table>  
+        <tr>
+            <th>&nbsp;&nbsp;实验名称&nbsp;&nbsp;</th>
+            <th>&nbsp;&nbsp;仿真日期&nbsp;&nbsp;</th>
+            <th>&nbsp;&nbsp;下载文档&nbsp;&nbsp;</th>
+            <th>&nbsp;&nbsp;删除记录&nbsp;&nbsp;</th>
+        </tr>    
+    {% for sp in simulationparament_list %}
+        <tr> 
+            <td>        
+                <a href="{{sp.get_absolute_url}}">
+                {{sp.TestName}}
+                </a> 
+            </td> 
+            <td>{{sp.RunningTime}}</td>
+            <td><a href="{% url 'download' pf=sp.id %}">下载</a></td>   
+            <td><a href="{% url 'delete' pk=sp.id %}">删除</a></td>                
+            </tr>
+    {% endfor %}
+    </table> 
+         
+    {% else %}
+    <p>
+        没有找到您的历史数据，请您再次进行仿真
+    </p>
+    <p>&nbsp;</p>
+    {% endif %}
+    </div>
+    
+    {% if is_paginated %}
+    <hr>
+    <div class="paginated"> 
+        <p style="text-align:center">
+        {% if page_obj.has_previous %}   
+            <a href="{{request.path}}?page={{page_obj.pervious_page_number}}">previous</a>
+            
+        {% endif %}
+        
+        Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}.
+        
+        {% if page_obj.has_next %}
+            <a href="{{request.path}}?page={{page_obj.next_page_number}}">next</a>
+        {% endif %}
+        </p>
+        <p>&nbsp;</p>
+    </div>
+    {% endif %}
+    
+{% endblock content %}

@@ -1,0 +1,18 @@
+xiaoming 设计的仿真参数
+--------------------------------------------------------
+发送节点MAC地址（Send Node MAC）      : 00:00:00:00:00:02
+接收节点MAC地址（Recv Node MAC）      : 00:00:00:00:00:03
+调制方式（Modulation）    : QPSK
+MAC协议（MAC Protocol）   : simple-aloha
+路由协议（Routing Protocol）  : Static-routing
+传输层协议（Transport Protocol） : TCP
+应用层协议（Application Protocol）: CBR
+仿真方式（Simulation Mode） : simulation
+起始时间（Starting Time）: 2020-04-13 11:31:59.963585+00:00
+--------------------------------------------------------
+
+本次实验结果
+--------------------------------------------------------
+丢包率（PacketLoss） : -1%
+延时（Delay）: -1ms
+平均吞吐量（AverageThroughput） : -1Mbit/s

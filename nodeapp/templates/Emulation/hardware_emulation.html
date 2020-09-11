@@ -1,0 +1,94 @@
+<!--
+    硬件仿真界面文档
+    本文档主要展示，选择两个节点进行仿真，并能实现在发射节点放入要发送的文档，或者图片，在接收节点收到该文档或者图片
+-->
+
+{% extends "base_generic.html" %}
+{% block title %}
+    <title>硬件仿真</title>
+{% endblock %}
+
+{% block content %}
+<p>&nbsp;</p>
+<h1 style="text-align:center">Hardware Emulation</h1>
+
+<hr>
+<form action="{% url 'hardwareEmulation' %}" method="post" name="form_update">
+    {% csrf_token %}
+
+    <h3>&emsp;1. 根据下面内容查看节点? <input type="submit" name = "SeeNode" value="查看节点"></h3>
+    <p>
+        <label>
+        <input type = "radio" name = "See" value = "All Nodes">查看所有节点
+    </label>
+    <label>
+        <input type = "radio" name = "See" value = "Online Nodes">查看所有在线节点
+    </label>
+    <label>
+        <input type = "radio" name = "See" value = "Online Nodes and Sleep Nodes">查看所有在线节点和睡眠节点
+    </label>
+    <label>
+        <input type = "radio" name = "See" value = "Poweroff Nodes">在数据库中查看已经关机的节点（暂未开通）
+    </label>
+
+    </p>
+    
+    <!---->
+</form>
+
+<hr>
+<h3>&emsp;2.仿真信息</h3>
+<form action="{% url 'hardwareEmulation' %}" method="POST" name="start_emulation" enctype="multipart/form-data"> <!--不对表单数据编码-->
+    {% csrf_token %}
+    <div>
+        <p>
+        <label>
+            实验名称:
+            <input type = "text" name="Test_Name">
+        </label>
+        </p>
+    </div>
+    <div id = "send_msg">
+        <h2 style="text-align:center;">1.发射部分</h2>
+        <p>1.请选择发射节点：
+                {% for i in All_Nodes %}
+                {{i}}
+            {% endfor %}
+        </p>
+        <p>2.请上传发射节点要发送的文件： </p>
+        <p>&emsp;
+            <input type="file" name = "SendFile">
+        </p>
+        <p style="color:red">
+            {{ UpLoadFile_Result }}
+        </p>
+    </div>
+    
+    <div id = "recv_msg">
+        <h2 style="text-align:center">2. 接收部分</h2>
+        <p>1.请选择接收节点：</p>
+        <p>
+            
+            2.接收文件
+        </p>
+    </div>
+   
+
+    <div id="simulation_bottom">
+        &emsp;
+    </div>
+    <div id = "submit_div" >&emsp;
+        <input type = "reset" name = "Reset_Emulation" value = "重新设置">
+        {% if user.is_authenticated %}
+            <input type="submit" name="Start_Emulation" value="开始仿真" type="left:50%;">
+        {% else %}
+            <input type="button" name = "No_Access_Submit" value="开始仿真" onclick="no_access_submit()">
+        {% endif %}
+    </div>
+    <hr>
+    <div id="simulation_bottom">
+        &emsp;
+    </div>
+    <hr>
+</form>
+{% endblock content %} 

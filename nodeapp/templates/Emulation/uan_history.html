@@ -1,0 +1,40 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+{% if uanemulation_list %}
+<div class = "uanMonitor">
+    <br>
+    <h2>我的历史记录</h2>
+</div>
+<table class = "uanMonitor">
+    <tr>
+      <th>&emsp;&emsp;emuTime&emsp;&emsp;</th>
+      <th>&emsp;&emsp;source file&emsp;&emsp;</th>
+      <th>&emsp;&emsp;status&emsp;&emsp;</th>
+      <th>&emsp;&emsp;delete&emsp;&emsp;</th>
+    </tr>
+  {% for aEntry in uanemulation_list %}
+    <tr>
+        <td>{{aEntry.emuTime}}</td>
+        <td>
+		<a href="{% url 'uanSourceDownload' pf=aEntry.id %}">
+                {{aEntry.srcFilePath}}</td>
+            </a>
+	{% if aEntry.emuFilesPath is None  %}
+          <td>Running</td>
+	{% else %}
+	<td><a href = "{% url 'uanResultDownload' pf=aEntry.id %}">Success</a></td>
+	{% endif %}
+	<td>
+		<a href = "{% url 'uan_delete' pf=aEntry.id %}">delete</a>
+	</td>
+    </tr>
+
+  {% endfor %}
+
+</table>
+
+{% endif %}
+
+{% endblock content %}

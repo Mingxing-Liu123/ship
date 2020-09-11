@@ -1,0 +1,31 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<p> </p>
+<h3>&emsp;实时监测所有在线节点</h3>
+ 
+<form action="" method="POST" name="AllNodes" class="uanMonitor">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <th>节点序号</th>
+            <th>选择</th>
+        
+        </tr>
+        {% for node in nodeIDs %}
+        <tr>
+            <td><a href="/nodeapp/viewOneNode/{{node}}">{{node}}</a></td>
+            <td><input type="checkbox" name = "nodeID" value="{{node}}"></td>
+        </tr>
+       {% endfor %}
+    </table>
+    <label>65535为web server的NodeID</label>
+    <hr>
+    <label>
+        <input type="submit" name = "getNodes" id = "realsubmit">
+    </label>
+</form>
+
+
+
+{% endblock content %} 

@@ -1,0 +1,13 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+    <p>&nbsp;</p>
+    <h3 style="text-align:center">管理人员信息</h3>  
+    <hr>
+    <p>姓名: {{management.name}}</p>
+    <p>职位:{{management.job}}</p>
+    <p>电话号码: {{management.call}}</p>
+    <p>email: {{management.email}}</p>
+    <p>office_address:{{management.office_address}}</p>
+
+{% endblock %}

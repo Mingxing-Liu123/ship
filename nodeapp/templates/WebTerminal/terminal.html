@@ -1,0 +1,47 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    <title>终端测试</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/xterm.css' %}">
+    <script src="{% static 'js/xterm.js' %}"></script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div id = "terminal"></div>
+
+    <script>
+        var socket = new WebSocket('ws://' + window.location.host + '/ws/nodeapp/terminal_routing/' + {{nodeId}});
+        socket.onopen = function () {
+
+            var term = new Terminal();
+            term.open(document.getElementById('terms'));
+
+            term.on('data', function (data) { // 输入数据
+                var Date = window.event.keyCode;
+
+                if(Date == 13){
+                    term.write("\r\n")
+		}
+		socket.send(data);
+             });
+    
+            socket.onmessage = function (msg) { //接收到的数据
+                console.log("msg:")
+                console.log(msg);
+                console.log(msg.data);
+                term.write(msg.data);
+            };
+            socket.onerror = function (e) {
+                console.log(e);
+            };
+
+            socket.onclose = function (e) {
+                console.log(e);
+                term.destroy();
+            };
+        };
+    </script>
+{% endblock content %} 

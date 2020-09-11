@@ -1,0 +1,50 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div id = "uanEmulation">
+<form action="{% url 'viewUanEmulation' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div>
+	    <h2>ns-3仿真</h2>
+	<h3><input type="radio" name="plan" value="plan1">1:ns-3初级软件仿真</h3>
+	<p>A1.请输入仿真通信源文件:<input type="file" name = "emuFile"></p>
+	
+	<p>B1.请设置仿真脚本参数:</p>
+	<p>&emsp;1, 能量：
+	    <input type = "number" name = "energy" >
+	(J, 焦耳)
+	<br>
+	&emsp;&emsp;&emsp;2, 噪音模型：高斯白噪声（ns3::AcousticModemEnergyModelHelper）<br>
+	&emsp;&emsp;&emsp;3, 信道模型：ns3::UanChannel<br>
+	&emsp;&emsp;&emsp;4, 发射节点位置：(x, y, z)=
+	    <input type = "number" name = "send_x" >
+	    <input type = "number" name = "send_y" >
+	    <input type = "number" name = "send_z" >
+	<br>
+
+	&emsp;&emsp;&emsp;5, 接收节点位置：(x, y, z)=
+	    <input type = "number" name = "recv_x" >
+	    <input type = "number" name = "recv_y" >
+	    <input type = "number" name = "recv_z" >
+	</p>
+        &emsp;&emsp;注：仿真源文件为通信原始数据，节点位置模型：固定,节点数&#60;254, MAC层，物理层为ns-3内置模块
+    </div>
+
+    <div>
+	<h3><input type="radio" name="plan" value="plan2">2:ns-3中级软件仿真</h3>
+	<p>A2.请输入仿真通信源文件:<input type="file" name = "emuFile2"> </p>
+	<p>B2.请输入仿真脚本:<input type = "file" name = "EmuScript2"> </p>
+        &emsp;&emsp;注：仿真通信源文件为通信原始数据，仿真脚本为仿真所设置的物理层，MAC层脚本参数	
+    </div>
+    <div>
+	<h3><input type="radio" name="plan" value="plan3">3:ns-3高级软、硬件仿真</h3>
+	<p><a href="{% url 'terminalSelector' %}">原始ns-3软件包</a></p>
+	&emsp;&emsp;注：可以自定义物理层和MAC层协议和模块，需自行设计运行程序
+    <div>
+        <input type="submit" value = "开始仿真">
+    </div> 
+</form>
+
+</div>
+
+{% endblock content %}

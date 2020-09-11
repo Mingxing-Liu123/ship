@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        {% block title %}
+        <title>水声节点</title>
+        {% endblock %}
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/stylebp.css' %}">
+
+        <script src="{% static 'js/main.js' %}"></script>
+        <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
+        <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=lVplfEgrfm5d2qMYjHKFIkPF7N9pwnio"></script>
+        <script type="text/javascript" src="//api.map.baidu.com/library/RectangleZoom/1.2/src/RectangleZoom_min.js"></script>
+        <script type="text/javascript" src="//api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
+        <script type="text/javascript" src="//api.map.baidu.com/api?v=1.2"></script>
+        <!--加载鼠标绘制工具-->
+        <script type="text/javascript" src="//api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+        <link rel="stylesheet" href="//api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
+        <!--加载检索信息窗口-->
+	    <script type="text/javascript" src="//api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.js"></script>
+<!--        <script>-->
+<!--2         $.ajaxSetup({-->
+<!--3             data:{csrfmiddlewaretoken:'{{ csrf_token }}'}-->
+<!--4         })-->
+<!--5     </script>-->
+	    <link rel="stylesheet" href="//api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.css" />
+        <style type="text/css">
+            dl,dt,dd,ul,li{
+		    margin:0;
+		    padding:0;
+		    list-style:none;
+	        }
+	        dt{
+		font-size:14px;
+		font-family:"微软雅黑";
+		font-weight:bold;
+		border-bottom:1px dotted #000;
+		padding:5px 0 5px 5px;
+		margin:5px 0;
+	}
+	dd{
+		padding:5px 0 0 5px;
+	}
+	li{
+		line-height:28px;
+	}
+p>span{
+    font-family:courier;
+    color:blue;
+}
+
+	    </style>
+    </head>
+
+    <body>
+        <div id="body_preface">
+            <h1>无线声电协同通信测试平台</h1>
+        </div>
+        <div id="container">
+            <nav id="body_home"> <!--菜单栏-->
+                <ul>
+                    <li><a href="{% url 'index' %}" class="actual">主页</a></li>
+                    <li><a href="{% url 'runningsimulation' %}">节点测试 </a></li>
+<!--                    <li><a href="#">仿真</a>-->
+<!--                        <ul class="xoy_Y_ul">-->
+<!--                            <li class="xoy_Y"><a href="{% url 'runningsimulation' %}">软件仿真</a></li>-->
+<!--                            <li class="xoy_Y"><a href="{% url 'hardwareEmulation' %}">硬件仿真</a></li>-->
+<!--                            {% if user.is_authenticated %}-->
+<!--                                <li class="xoy_Y"><a href="{% url 'terminalSelector' %}">终端调试</a></li>-->
+<!--                                <li class="xoy_Y"><a href="{% url 'simulation_history' %}">历史记录</a></li>-->
+<!--                            {% else %}-->
+<!--                                <li class="xoy_Y"><a href="{% url 'publichistory' %}">历史记录</a></li>-->
+<!--                            {% endif %}-->
+<!--                        </ul>-->
+<!--                    </li>-->
+                    <li><a href="#">监测</a>
+                        <ul class="xoy_Y_ul">
+                            <li class="xoy_Y"><a href="{% url 'viewOnline' %}">实时监测</a></li>
+			                <li class="xoy_Y"><a href="{% url 'ns3Simulation' %}">ns3仿真</a></li>
+			                <li class="xoy_Y"><a href="{% url 'viewUanEmulation' %}">硬件仿真</a></li>
+			                <li class="xoy_Y"><a href="{% url 'uanHistory' %}">我的仿真</a></li>
+                        </ul>
+
+                    </li>
+                    <li><a href="#">无人船</a>
+                        <ul class="xoy_Y_ul">
+                            <li class="xoy_Y"><a href="{% url 'viewpoision' %}">实时位置</a></li>
+                            <li class="xoy_Y"><a href="#">远程接收</a></li>
+                            <li class="xoy_Y"><a href="#">远程控制</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'management_list' %}">联系</a></li>  <!--包含反馈-->
+                    <li><a href="{% url 'comment' %}">社区</a>
+                    {% if user.is_authenticated %}
+                        <ul
+                        class="xoy_Y_ul">
+                            <li class="xoy_Y"><a href="{% url 'my_comment' %}">我的讨论</a></li>
+                        </ul>
+                    {% endif %}
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li style = "float: right"><a href = "#">kang</a>
+                        <ul class = "xoy_Y_ul">
+                            <li class="xoy_Y"><a href="#">个人中心</a></li>
+                            <li class="xoy_Y"><a href="{% url 'logout' %}?next={{request.path}}">退出</a></li>
+                        </ul>
+                    </li>
+
+                    {% else %}
+                        <li style="float: right"><a href="{% url 'login' %}?next={{requrest.path}}">登录</a></li>
+                    {% endif %}
+                </ul>
+
+                <div class="content_bottom">&nbsp;</div>
+            </nav>
+
+            <hr style="background-color:#566573;height: 2px;width:96%;border: none;"/>
+ <!--内容主体-->
+ <div id="content">
+     <div class = "onlinenodes"
+         style="float: left;
+                width: 30%;
+                background-color: #EBF5FB;
+                border:1px solid black;
+                border-bottom-style:none;
+                height:500px;">
+        <h3 style="margin-left: 4%;">
+            在线节点{{nodeId}}的信息:
+            <br>
+<!--左侧显示-->
+            <div style="float:left">
+                <p >偏航角: <span id="heading" > </span></p>
+                <p >俯仰角: <span id="pitch" > </span></p>
+                <p >横滚角: <span id="roll" > </span></p>
+                <p >维度: <span id="lat" > </span></p>
+                <p >经度: <span id="lon" > </span></p>
+                <p >高度: <span id="alt" > </span></p>
+                <p >东向速度: <span id="ve" > </span></p>
+                <p >北向速度: <span id="vn" > </span></p>
+                <p >天向速度: <span id="vu" > </span></p>
+            </div>
+        </h3>
+    </div>
+
+    <div class = "map"
+         style="float: left;
+                width: 68%;
+                background-color: #EBF5FB;
+                border:1px solid black;
+                border-bottom-style:none;
+                border-left-style:none;
+                height:500px;">
+<!--        <h3 style="text-align: center;">地图</h3>-->
+        <div style="overflow:hidden;zoom:1;position:relative;width: 100%;height: 93%" id="allmap"></div>
+        <div id="result">
+<!--		<input type="button" value="获取覆盖物数目" onclick="alert(overlays.length)"/>-->
+        <input type="button" value="远程控制" onclick="sendcomtoship()"/>
+		<input type="button" value="清除所画线路" onclick="clearAll()"/>
+        <input type="button" value="清除所有轨迹" onclick="clearAllrout()"/>
+        <input type="button" value="发送线段至无人船" onclick="sendlinetoship()"/>
+        <input type="button" value="发送区域至无人船" onclick="sendareatoship()"/>
+        <input type="button" value="实时跟踪" onclick="track()"/>
+        <input type="button" value="解除跟踪" onclick="detrack()"/>
+
+	</div>
+    </div>
+ </div>
+
+<script type="text/javascript">
+    $.ajaxSetup({
+            data:{csrfmiddlewaretoken:'{{ csrf_token }}'}
+        })
+    // 百度地图API功能
+    var map = new BMap.Map("allmap");
+    map.centerAndZoom(new BMap.Point(113.35193,23.161509),25);
+    map.enableScrollWheelZoom(true);
+    var overlays = [];
+    var trackflag = 0;
+    //存放历史位置的全局数组
+    var trackMap = [];
+    var label = 0;
+	var overlaycomplete = function(e){
+        overlays.push(e.overlay);
+        //alert(e.overlay.point.lng+ "," + e.overlay.point.lat);
+    };
+    var styleOptions = {
+        strokeColor:"blue",    //边线颜色。
+        fillColor:"blue",      //填充颜色。当参数为空时，圆形将没有填充效果。
+        strokeWeight: 3,       //边线的宽度，以像素为单位。
+        strokeOpacity: 0.8,	   //边线透明度，取值范围0 - 1。
+        fillOpacity: 0.6,      //填充的透明度，取值范围0 - 1。
+        strokeStyle: 'solid' //边线的样式，solid或dashed。
+    }
+    //实例化鼠标绘制工具
+    var drawingManager = new BMapLib.DrawingManager(map, {
+        isOpen: false, //是否开启绘制模式
+        enableDrawingTool: true, //是否显示工具栏
+        drawingToolOptions: {
+            anchor: BMAP_ANCHOR_TOP_RIGHT, //位置
+            offset: new BMap.Size(5, 5), //偏离值
+        },
+        circleOptions: styleOptions, //圆的样式
+        polylineOptions: styleOptions, //线的样式
+        polygonOptions: styleOptions, //多边形的样式
+        rectangleOptions: styleOptions //矩形的样式
+    });
+    //添加鼠标绘制工具监听事件，用于获取绘制结果
+    drawingManager.addEventListener('overlaycomplete', overlaycomplete);
+    function clearAll() {
+		for(var i = 0; i < overlays.length; i++){
+            map.removeOverlay(overlays[i]);
+        }
+        overlays.length = 0
+    }
+
+    function sendcomtoship(){
+        $.ajax({
+	        url:'sendcommand',          // url填写自己的,这里相当于url.py中的/viewonlinenodemsg/sendroute
+	        method: 'POST',
+	        traditional:true,	//想要提交list，必须写这个参数
+	        //data:{'route':poilist},
+            success: function (response) {
+                if(response === 'OK!') { alert('发送命令成功!'); }
+                else { alert('无连接'); }          }
+        })
+    }
+
+    function sendareatoship(){
+        poilist = []
+        for(var i = 0; i < overlays.length; i++){
+            poilist[2*i] = overlays[i].point.lng
+            poilist[2*i+1] = overlays[i].point.lat
+        }
+    $.ajax({
+	   url:'sendarea',          // url填写自己的,这里相当于url.py中的/viewonlinenodemsg/sendroute
+	   method: 'POST',
+	   traditional:true,	//想要提交list，必须写这个参数
+	   data:{'route':poilist},
+        success: function (response) {
+            if(response === 'OK!') { alert('发送点成功!'); }
+            else { alert('发送失败'); }
+        }
+    })
+        alert(poilist);
+    }
+
+function sendlinetoship(){
+        linelist = []
+        for(var i = 0; i < overlays[0].getPath().length; i++){
+            linelist[2*i] = overlays[0].getPath()[i].lng
+            linelist[2*i+1] = overlays[0].getPath()[i].lat
+        }
+        $.ajax({
+	        url:'sendlineroute',          // url填写自己的
+	        method: 'POST',
+	        traditional:true,	//想要提交list，必须写这个参数
+	        data:{'lineroute':linelist},
+            success: function (response) {
+            if(response === 'OK!') {
+                alert('发送线成功!'+','+'你发送的直线为:'+linelist);
+                }
+            else { alert('当前无连接'); }
+            }
+        })
+}
+
+function clearAllrout(){
+    trackMap = [];
+    var allOverlay = map.getOverlays();
+    for (var i = 0; i < allOverlay.length; i++) {
+       if (allOverlay[i].toString() == "[object Polyline]") {
+          map.removeOverlay(allOverlay[i]);
+       }
+    }
+}
+
+function track(){
+       trackflag = 1;
+}
+function detrack(){
+       trackflag = 0;
+       trackMap = [];
+}
+
+function deletePoint(){
+        var allOverlay = map.getOverlays();
+        for (var i = 0; i < allOverlay.length -1; i++){
+            if (allOverlay[i] instanceof BMap.Marker) {
+                if(allOverlay[i].getLabel().content == "节点1位置"||allOverlay[i].getLabel().content == "跟踪中"){
+                    map.removeOverlay(allOverlay[i]);
+                    return false;
+                }
+            }
+        }
+}
+
+//定时刷新界面（1秒）
+   var getting = {
+     url : "msgrefresh", //后台查询验证的方法
+     dataTpye : "json",
+     data : {'nodeid':{{nodeId}}
+     },
+     type : "post",
+     success : function(msg) {
+           deletePoint();
+           var rsdata = JSON.parse(msg);
+            if(rsdata[3] != "" && rsdata[4] != ""){
+                var new_point = new BMap.Point(rsdata[4],rsdata[3]);
+                var marker = new BMap.Marker(new_point);  // 创建标注
+                var opts = {
+                position : new_point,    // 指定文本标注所在的地理位置
+                offset   : new BMap.Size(30, -30)    //设置文本偏移量
+                }
+                label = new BMap.Label("节点1位置", opts);  // 创建文本标注对象
+                label.setStyle({
+                    color : "blue",
+                    fontSize : "12px",
+                    height : "20px",
+                    lineHeight : "20px",
+                    fontFamily:"微软雅黑"
+                });
+                marker.setLabel(label);
+                //map.addOverlay(label);
+                map.addOverlay(marker);              // 将标注添加到地图中
+                map.panTo(new_point);     //将地图定位至以new_point为中心
+                if (trackflag == 1){
+                    trackMap.push(new_point);        //push() 方法可向数组的末尾添加一个或多个元素，并返回新的长度
+                    label.setContent("跟踪中");
+                    if (trackMap.length > 2) {
+                        polyline = new BMap.Polyline(trackMap, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});   //创建折线
+				        map.addOverlay(polyline);   //增加折线
+			        }
+                }
+            }
+            document.getElementById("heading").innerHTML = rsdata[0];
+            document.getElementById("pitch").innerHTML = rsdata[1];
+            document.getElementById("roll").innerHTML = rsdata[2];
+            document.getElementById("lat").innerHTML = rsdata[3];
+            document.getElementById("lon").innerHTML = rsdata[4];
+            document.getElementById("alt").innerHTML = rsdata[5];
+            document.getElementById("ve").innerHTML = rsdata[6];
+            document.getElementById("vn").innerHTML = rsdata[7];
+            document.getElementById("vu").innerHTML = rsdata[8];
+
+
+     },
+     error:function(){  //请求失败的回调方法
+     	//alert("刷新失败，请重试");
+     }
+ };
+window.setInterval(function(){$.ajax(getting)},10000);   //每三秒调用一次ajax 刷新界面
+</script>
+
+<!--内容结束-->
+            <hr style="background-color:#566573;height: 2px;width:96%;border: none;clear:both;"/>
+        </div>
+<!--页底-->
+        <div style="background:#808f99;text-align: center;clear:both">
+            <p>本网站仅作学习和测试使用,未经许可不得应用于商业用途</p>
+            <p>网页设计制作：小张,小刘</p>
+        </div>
+    </body>
+</html>

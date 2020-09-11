@@ -1,0 +1,49 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h3>&emsp;1.过往评论</h3>
+
+
+{% for topic in All_Topics1 %}
+    <div style="float: left; width: 96%;border-top: rgb(186, 143, 235) 1px solid;margin-left: 2%">
+        <p style="color:blue"> 
+            {{topic.Spoke_Man}}&emsp;于&emsp;{{topic.Spoke_Time}}评论&emsp;&emsp;
+            <a href="{% url 'GoodComment' pf=topic.id %}">赞</a>({{topic.Good}})&emsp;&emsp;
+            <a href="#">回复</a>
+        </p>
+        <div style="float:left;width:96%;margin-left: 2%;background: rgb(215, 235, 248)">
+            {{topic.Content}}
+            <hr>
+
+        </div>
+        
+    </div>   
+{% endfor %}
+
+<div style="float: left; width: 100%;">
+    <h3>&emsp;2.欢迎参与讨论</h3>
+</div>
+
+<form method="POST" action="{% url 'comment' %}" name="your_topic">
+    {% csrf_token %}
+    <p>
+        {{TopicForm.Title.label}}:&emsp;{{TopicForm.Title}}
+    </p>
+    <p>说点什么吧？</p>
+    <p>
+        {{TopicForm.Content}}
+    </p>
+    <p>
+        <input type="reset" name="重置">&emsp;  
+        {% if user.is_authenticated %}
+            <input TYPE="submit" name="提交" onclick="submit_comment()">
+        {% else %}
+            <input type="button" name="提交" onclick="no_access_submit()">  
+        {% endif %}   
+    </p>
+    <p>
+        &emsp;
+    </p>
+</form>
+ 
+{% endblock content %} 

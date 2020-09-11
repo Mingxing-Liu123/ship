@@ -1,0 +1,43 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div>
+    <br>
+    <h3>&emsp;硬件仿真</h3>
+</div>
+<div id = "uanEmulation">
+<form action="{% url 'viewUanEmulation' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div>
+        请输入仿真原始数据文件:
+        <input type="file" name = "emuFile">
+        <br>
+        请输入仿真运行脚本：
+        <input type="file" name = "EmuScript">	
+    </div>
+    <hr>
+    <div>
+        请选择发射节点：
+        <select name = "sendNodeId">
+            {% for node in onlineNodes %}
+            <option value = "{{node}}">第{{node}}节点</option>
+            {% endfor %}
+        </select>
+    </div>
+    <br>
+    <div>
+        请选择接收节点:
+        <select name = "recvNodeIds" multiple = "multiple">
+            {% for node in onlineNodes %}
+            <option value = "{{node}}">第{{node}}节点</option>
+            {% endfor %} 
+        </select>
+    </div>
+    <div>
+        <input type="submit" value = "开始仿真">
+    </div> 
+</form>
+
+</div>
+
+{% endblock content %}

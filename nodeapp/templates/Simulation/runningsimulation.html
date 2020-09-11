@@ -1,0 +1,144 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    <title>运行仿真</title>
+{% endblock %}
+
+
+{% block content %}
+    <p>&nbsp;</p>
+    <h2 style="text-align:center">simulation</h2>
+    
+    <hr>
+    <form action="#" method="post" name="form_update">
+        {% csrf_token %}
+        <p>
+            Number of online nodes:
+            {{online_nodes}}
+            <input type="submit" name="update" value="刷新">   
+        </p>
+    </form>
+
+    <hr>
+    <div id="simulation_l">
+        <h2>paramenter</h2>
+        <hr>
+        <form action="{% url 'runningsimulation' %}" method="POST" name="set" onsubmit="return submit_sure()">
+            {% csrf_token %}
+            <p>
+                <!--1 实验名称-->
+                1. {{form_request.TestName.label}}:&nbsp;{{form_request.TestName}} 
+                <span style="color:red">
+                {{form_request.errors.TestName.0}}   
+                </span>                
+            </p> 
+
+            <p>
+                <!--2.发送节点-->
+                2. 请选择发送节点：
+                {% for mac in MACLIST %}
+                <br>
+                <input type="radio" name="sendnode" id="{{mac}}0" value={{mac}} style="right: 2em;">
+                <label for="{{mac}}0">MAC：{{mac}}</label>
+                
+                {% endfor %}
+            </p>
+            <p>
+                <!--3.接收节点-->
+                3. 请选择接收节点：
+                {% for mac in MACLIST %}
+                <br>
+                <input type="radio" id="{{mac}}1" name="recvnode" value={{mac}}>
+                <label for="{{mac}}1">MAC：{{mac}}</label>
+                
+                {% endfor %}
+            </p>  
+            <p>
+                <!--2.调制方式-->
+                {{form_request.Modulation.label}}:&nbsp;{{form_request.Modulation}}
+                <span style="color:red">
+                    {{form_request.errors.Modulation.0}}
+                </span>
+                
+            </p> 
+            <p>
+                <!--3.MAC协议-->
+                {{form_request.MACPtorocols.label}}:&nbsp;{{form_request.MACPtorocols}}
+                <span style="color:red">
+                    {{form_request.errors.MACPtorocols.0}}
+                </span>
+            </p>  
+            <p>
+                <!--4.路由协议-->
+                {{form_request.Route.label}}:&nbsp;{{form_request.Route}}
+                <span style="color:red">
+                    {{form_request.errors.Route.0}}
+                </span>
+            </p> 
+            <p>
+                <!--5.传输层协议-->
+                {{form_request.Transport.label}}:&nbsp;{{form_request.Transport}}
+                <span style="color:red">
+                    {{form_request.errors.Transport.0}}
+                </span>                   
+            </p>  
+            <p>
+                <!--6.应用层协议-->
+                {{form_request.Application.label}}:&nbsp;{{form_request.Application}}
+                <span style="color:red">
+                    {{form_request.errors.Application.0}}
+                </span>
+            </p> 
+            <p>
+                <!--7.仿真方式-->
+                {{form_request.Simulation.label}}:&nbsp;{{form_request.Simulation}}
+                <span style="color:red">
+                    {{form_request.errors.Simulation.0}}
+                </span>
+            </p>
+
+            <p>
+                <!--8 仿真时间-->
+                <label for="maxtime">仿真最长时间：</label>
+                <input type="number" id="maxtime" name="MaxTimeRange" min="1" max="40" value="1"> &nbsp;(min)
+            </p>
+
+            
+            <hr>
+            <div style="text-align: center">
+                {% if user.is_authenticated %}
+                    <input type="submit" name="agree_submit" value="Run" style="margin:0 auto;margin-bottom: 5px;">
+                    <input type="reset" name="agree_reset" value="Reset">
+                {% else %}
+                    <input type="button" value="Run" onclick="no_access_submit()">
+                    <input type="reset" value="Reset">
+                {% endif %}
+                <br>
+            </div>
+            
+        </form>
+
+    </div>
+
+    <div id="simulation_r">        
+        <h2>results</h2>
+        <hr>
+
+        <form action="" method="GET" name="form_result">
+            <input type="submit" name="request_result">
+        </form>
+        <h3>1.Packet loss:</h3>
+        <p> 
+            {{OUTPUT.Loss}}
+        </p>
+        <h3>2.Delay:</h3>
+        <p>
+            {{OUTPUT.Delay}}
+        </p>
+        <h3>3.Average throughput:</h3>
+        <p>   
+            {{OUTPUT.Throughput}} &nbsp;&nbsp; Mbit/s
+        </p>
+    </div>
+    <div id="simulation_bottom">&nbsp;</div>
+{% endblock %}

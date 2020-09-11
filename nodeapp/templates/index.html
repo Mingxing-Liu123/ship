@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        {% block title %}
+        <title>水声节点</title>
+        {% endblock %}
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/stylebp.css' %}">
+
+        <script src="{% static 'js/main.js' %}"></script>
+        <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
+        <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<!--        <script>-->
+<!--            $.ajaxSetup({-->
+<!--                data:{csrfmiddlewaretoken:'{{ csrf_token }}'}-->
+<!--            })-->
+<!--        </script>-->
+        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=lVplfEgrfm5d2qMYjHKFIkPF7N9pwnio"></script>
+        <script type="text/javascript" src="//api.map.baidu.com/library/RectangleZoom/1.2/src/RectangleZoom_min.js"></script>
+        <script type="text/javascript" src="//api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
+        <script type="text/javascript" src="//api.map.baidu.com/api?v=1.2"></script>
+        <!--加载鼠标绘制工具-->
+        <script type="text/javascript" src="//api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+        <link rel="stylesheet" href="//api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
+        <!--加载检索信息窗口-->
+	    <script type="text/javascript" src="//api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.js"></script>
+	    <link rel="stylesheet" href="//api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.css" />
+        <style type="text/css">
+            dl,dt,dd,ul,li{
+		    margin:0;
+		    padding:0;
+		    list-style:none;
+	        }
+	        dt{
+		font-size:14px;
+		font-family:"微软雅黑";
+		font-weight:bold;
+		border-bottom:1px dotted #000;
+		padding:5px 0 5px 5px;
+		margin:5px 0;
+	}
+	dd{
+		padding:5px 0 0 5px;
+	}
+	li{
+		line-height:28px;
+	}
+	    </style>
+    </head>
+
+    <body>
+        <div id="body_preface">
+            <h1>无线声电协同通信测试平台</h1>
+        </div>
+        <div id="container">
+            <nav id="body_home"> <!--菜单栏-->
+                <ul>
+                    <li><a href="{% url 'index' %}" class="actual">主页</a></li>
+                    <li><a href="#">节点测试 </a></li>
+                    <li><a href="#">通信测试</a>
+                        <ul class="xoy_Y_ul">
+                            <li class="xoy_Y"><a href="{% url 'viewpoision' %}">实时位置</a></li>
+                            <li class="xoy_Y"><a href="#">远程接收</a></li>
+                            <li class="xoy_Y"><a href="#">远程控制</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="#">组网测试</a>
+                        <ul class="xoy_Y_ul">
+                            <li class="xoy_Y"><a href="{% url 'viewOnline' %}">实时监测</a></li>
+			                <li class="xoy_Y"><a href="{% url 'ns3Simulation' %}">ns3仿真</a></li>
+			                <li class="xoy_Y"><a href="{% url 'viewUanEmulation' %}">硬件仿真</a></li>
+			                <li class="xoy_Y"><a href="{% url 'uanHistory' %}">我的仿真</a></li>
+                        </ul>
+
+                    </li>
+                    <li><a href="{% url 'management_list' %}">联系</a></li>  <!--包含反馈-->
+                    <li><a href="{% url 'comment' %}">社区</a>
+                    {% if user.is_authenticated %}
+                        <ul
+                        class="xoy_Y_ul">
+                            <li class="xoy_Y"><a href="{% url 'my_comment' %}">我的讨论</a></li>
+                        </ul>
+                    {% endif %}
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li style = "float: right"><a href = "#">kang</a>
+                        <ul class = "xoy_Y_ul">
+                            <li class="xoy_Y"><a href="#">个人中心</a></li>
+                            <li class="xoy_Y"><a href="{% url 'logout' %}?next={{request.path}}">退出</a></li>
+                        </ul>
+                    </li>
+
+                    {% else %}
+                        <li style="float: right"><a href="{% url 'login' %}?next={{requrest.path}}">登录</a></li>
+                    {% endif %}
+                </ul>
+
+                <div class="content_bottom">&nbsp;</div>
+            </nav>
+
+            <hr style="background-color:#566573;height: 2px;width:96%;border: none;"/>
+ <!--内容主体-->
+ <div id="content">
+    <div class = "onlinenodes"
+            style="float: left;
+                width: 20%;
+                background-color: #EBF5FB;
+                border:1px solid black;
+                border-bottom-style:none;
+                height:500px;">
+            <h3 style="margin-left: 4%;">
+                在线节点
+                <br>
+                {% for nodeId in onlinenodes %}
+                <label style="display: inline-block;line-height: 2;">
+	&emsp;&emsp;            <a href= "{% url 'onlinenodemsg' nodeId=nodeId %}" >
+                    节点{{nodeId}}
+                </a>
+                </label>
+                <br>
+                {% endfor %}
+            </h3>
+<!--        <div>-->
+<!--            recvque:{{data}}-->
+<!--            <br>-->
+<!--            recvother:{{data1}}-->
+
+<!--        </div>-->
+    </div>
+
+    <div class = "map"
+         style="float: left;
+                width: 79%;
+                background-color: #EBF5FB;
+                border:1px solid black;
+                border-bottom-style:none;
+                border-left-style:none;
+                height:500px;">
+        <h3 style="text-align: center;">地图</h3>
+        <div style="overflow:hidden;zoom:1;position:relative;width: 100%;height: 85%" id="allmap"></div>
+    </div>
+ </div>
+
+<script type="text/javascript">
+    // 百度地图API功能
+    var map = new BMap.Map("allmap");
+    map.centerAndZoom(new BMap.Point(113.352997,27.162128),19);
+    map.enableScrollWheelZoom(true);
+
+//定时刷新界面（1秒）
+  var getting = {
+     url : "poirefresh", //后台查询验证的方法
+     dataTpye : "json",
+     data : {
+     },
+     type : "post",
+     success : function(msg) {
+
+           var rsdata = JSON.parse(msg);
+           //console.log(rsdata);
+            if(rsdata[0] != "" && rsdata[1] != ""){
+            map.clearOverlays();
+            var new_point = new BMap.Point(rsdata[1],rsdata[0]);
+            var marker = new BMap.Marker(new_point);  // 创建标注
+            var opts = {
+            position : new_point,    // 指定文本标注所在的地理位置
+            offset   : new BMap.Size(30, -30)    //设置文本偏移量
+            }
+            var label = new BMap.Label("节点1位置", opts);  // 创建文本标注对象
+            label.setStyle({
+             color : "blue",
+             fontSize : "12px",
+             height : "20px",
+             lineHeight : "20px",
+             fontFamily:"微软雅黑"
+         });
+            marker.setLabel(label);
+            //map.addOverlay(label);
+            map.addOverlay(marker);              // 将标注添加到地图中
+            map.panTo(new_point);
+        }
+     },
+     error:function(){  //请求失败的回调方法
+     	// alert("刷新失败，请重试");
+     }
+ };
+ $.ajaxSetup({
+            data:{csrfmiddlewaretoken:'{{ csrf_token }}'}
+        });
+window.setInterval(function(){$.ajax(getting)},10000);   //每三秒调用一次ajax 刷新界面
+//theLocation()
+</script>
+
+<!--内容结束-->
+            <hr style="background-color:#566573;height: 2px;width:96%;border: none;clear:both;"/>
+        </div>
+<!--页底-->
+        <div style="background:#808f99;text-align: center;clear:both">
+            <p>本网站仅作学习和测试使用,未经许可不得应用于商业用途</p>
+            <p>网页设计制作：小张,小刘</p>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,105 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <p>
+        <a href="{% url 'simulation_history' %}">上一步</a>
+    </p>    
+    <h1>参数设置和仿真结果</h1>
+    
+    <hr> 
+    <p class="simulation_detail">  
+    <table>
+    <caption>{{simulationparament.SimulationUser}} 设计的仿真参数</caption>  <!--标题-->
+        <tr>
+            <th></th>
+            <th>参数（Parameter）</th>
+            <th>值（Value）</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>实验名称(Name)</td>
+            <td>{{simulationparament.TestName}}</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>发射节点(Send Node MAC)</td>
+            <td>{{simulationparament.SendNodeMac}}</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>接收节点(Recv Node Mac)</td>
+            <td>{{simulationparament.RecvNodeMac}}</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>调制方式(Modulation Mode)</td>
+            <td>{{simulationparament.Modulation}}</td>
+        </tr>
+        
+        <tr>
+            <td>5</td>
+            <td>MAC协议（MAC Ptorocol）</td>
+            <td>{{simulationparament.MACPtorocols}}</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>路由协议（Routing Protocol）</td>
+            <td>{{simulationparament.Route}}</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>传输层协议（Transport Protocol）</td>
+            <td>{{simulationparament.Transport}}</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>应用层协议（Application Protocol）</td>
+            <td>{{simulationparament.Application}}</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>仿真方式(Simulation Mode)</td>
+            <td>{{simulationparament.Simulation}}</td>
+        </tr>
+        <tr>
+            <td>&nbsp;10&nbsp;</td>
+            <td>运行时间（time）</td>
+            <td>{{simulationparament.RunningTime}}</td>
+        </tr>
+
+    </table>
+    <hr>
+    <table>
+        <caption>本次实验结果</caption>
+        <tr>
+            <th></th>
+            <th>参数（Parameter）</th>
+            <th>值（Value）</th>
+        </tr>
+        <tr>
+            <td>&nbsp;1&nbsp;</td>
+            <td>丢包率（PacketLoss）</td>
+            <td>{{simulationparament.PacketLoss}} %</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>延时（Delay）</td>
+            <td>{{simulationparament.Delay}} ms</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>平均吞吐量</td>
+            <td>{{simulationparament.AverageThroughput}}  Mbit/s</td>
+        </tr>
+        <tr>
+            <td colspan="3" style="color: red">&nbsp;注：如果各项指标均为123，则没有进行仿真&nbsp;</td>
+        </tr>
+    </table>
+    </p>
+{% else %}
+    <p>不好意思！您还没有登录，请您登录之后再继续访问!</p>
+    <p>sorry! You are not logged in, please login again!</p>
+{% endif %}
+{% endblock content %}
+

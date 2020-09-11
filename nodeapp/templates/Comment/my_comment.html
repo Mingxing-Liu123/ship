@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>我的评论</h1>
+ <hr>
+{% for topic in My_Topics %}
+    <p>评论时间：{{topic.Spoke_Time}}&emsp;&emsp;<a href="{% url 'delete_mycomment' pf=topic.id %}">删除评论</a></p>
+    <p>评论内容： {{topic.Content}}</p>
+    <hr>
+{% endfor %}
+<p>
+    &emsp;
+</p>
+{% endblock content %} 

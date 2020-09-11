@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    <title>终端测试</title>
+{% endblock %}
+
+{% block content %}
+    <p>
+        请选择连接的机器:
+    </p>
+    {% for nodeId in nodeIDs %}
+
+    <label>
+	&emsp;&emsp;
+	<a href="{% url 'terminalSSH' nodeId=nodeId %}">
+	    第{{nodeId}}节点
+	</a>
+    </label>
+    <br>
+    {% endfor %}
+    <p>注意：第0节点表示服务器</p>
+
+{% endblock content %}

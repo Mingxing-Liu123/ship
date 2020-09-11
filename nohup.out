@@ -1,0 +1,207 @@
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+HTTP GET /nodeapp/home 200 [0.04, 42.48.96.201:28734]
+HTTP GET /static/css/style.css 304 [0.00, 42.48.96.201:28734]
+Not Found: /favicon.ico
+HTTP GET /favicon.ico 404 [0.01, 42.48.96.201:28734]
+Listen failure: Couldn't listen on 0.0.0.0:8800: [Errno 98] Address already in use.
+HTTP GET /nodeapp/viewOnlineNodes 200 [1.07, 42.48.96.201:28763]
+HTTP GET /nodeapp/viewUanEmulation 200 [0.09, 42.48.96.201:28763]
+HTTP POST /nodeapp/viewUanEmulation 200 [0.13, 42.48.96.201:28763]
+HTTP GET /nodeapp/home 200 [0.16, 42.48.96.201:28849]
+HTTP GET /nodeapp/viewUanEmulation 200 [1.10, 42.48.96.201:28849]
+HTTP POST /nodeapp/viewUanEmulation 200 [0.18, 42.48.96.201:28849]
+HTTP GET /nodeapp/viewOnlineNodes 200 [1.09, 42.48.96.201:28941]
+HTTP GET /nodeapp/viewUanEmulation 200 [0.16, 42.48.96.201:28941]
+HTTP POST /nodeapp/viewUanEmulation 200 [0.22, 42.48.96.201:28941]
+HTTP GET /nodeapp/viewOnlineNodes 200 [1.09, 42.48.96.201:28951]
+HTTP GET /nodeapp/viewUanEmulation 200 [0.11, 42.48.96.201:28951]
+HTTP POST /nodeapp/viewUanEmulation 200 [0.17, 42.48.96.201:28951]
+HTTP GET /nodeapp/viewOnlineNodes 200 [1.15, 42.48.96.201:29040]
+HTTP GET /nodeapp/viewUanEmulation 200 [1.12, 42.48.96.201:29077]
+HTTP POST /nodeapp/viewUanEmulation 200 [0.18, 42.48.96.201:29077]
+HTTP GET /nodeapp/viewUanEmulation 200 [1.21, 42.48.96.201:29092]
+HTTP POST /nodeapp/viewUanEmulation 200 [0.37, 42.48.96.201:29092]
+HTTP GET /nodeapp/uanHistory 200 [0.59, 42.48.96.201:29106]
+HTTP GET /nodeapp/uanHistory/158/delete 302 [0.10, 42.48.96.201:29105]
+HTTP GET /nodeapp/uanHistory/158/delete 302 [0.12, 42.48.96.201:29111]
+HTTP GET /nodeapp/uanHistory/158/delete 302 [0.09, 42.48.96.201:29113]
+HTTP GET /nodeapp/uanHistory/158/delete 302 [0.18, 42.48.96.201:29115]
+HTTP GET /nodeapp/uanHistory/158/delete 302 [0.08, 42.48.96.201:29116]
+HTTP GET /nodeapp/uanHistory/158/delete 302 [0.13, 42.48.96.201:29117]
+HTTP GET /nodeapp/uanHistory 200 [0.25, 42.48.96.201:29117]
+HTTP GET /nodeapp/uanHistory/159/delete 302 [0.10, 42.48.96.201:29117]
+HTTP GET /nodeapp/uanHistory 200 [0.26, 42.48.96.201:29117]
+HTTP GET /nodeapp/uanHistory/160/delete 302 [0.19, 42.48.96.201:29117]
+HTTP GET /nodeapp/uanHistory 200 [0.20, 42.48.96.201:29117]
+HTTP GET /nodeapp/uanHistory/161/delete 302 [0.18, 42.48.96.201:29117]
+HTTP GET /nodeapp/uanHistory 200 [0.24, 42.48.96.201:29117]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.14, 42.48.96.201:29118]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.08, 42.48.96.201:29118]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.10, 42.48.96.201:29119]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.11, 42.48.96.201:29121]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.11, 42.48.96.201:29123]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.13, 42.48.96.201:29125]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.11, 42.48.96.201:29127]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.07, 42.48.96.201:29129]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.09, 42.48.96.201:29131]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.13, 42.48.96.201:29133]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.19, 42.48.96.201:29135]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.15, 42.48.96.201:29137]
+HTTP GET /nodeapp/uanHistory/162/delete 302 [0.07, 42.48.96.201:29139]
+HTTP GET /nodeapp/uanHistory 200 [0.18, 42.48.96.201:29139]
+HTTP GET /nodeapp/uanHistory/163/delete 302 [0.11, 42.48.96.201:29139]
+HTTP GET /nodeapp/uanHistory 200 [0.19, 42.48.96.201:29139]
+HTTP GET /nodeapp/uanHistory/164/delete 302 [0.17, 42.48.96.201:29139]
+HTTP GET /nodeapp/uanHistory 200 [0.21, 42.48.96.201:29139]
+HTTP GET /nodeapp/uanHistory/165/delete 302 [0.16, 42.48.96.201:29139]
+HTTP GET /nodeapp/uanHistory 200 [0.21, 42.48.96.201:29139]
+HTTP GET /nodeapp/uanHistory/166/delete 302 [0.07, 42.48.96.201:29139]
+HTTP GET /nodeapp/uanHistory 200 [0.13, 42.48.96.201:29139]
+HTTP GET /nodeapp/viewUanEmulation 200 [1.20, 42.48.96.201:29148]
+HTTP POST /nodeapp/viewUanEmulation 200 [0.30, 42.48.96.201:29148]
+Not Found: /
+HTTP GET / 404 [0.00, 47.101.199.1:43347]
+Performing system checks...
+
+System check identified no issues (0 silenced).
+May 20, 2020 - 09:29:18
+Django version 3.0.4, using settings 'water.settings'
+Starting ASGI/Channels version 2.4.0 development server at http://0.0.0.0:8800/
+Quit the server with CONTROL-C.
+viewOnlineNodes
+enter into getOnlineNodes 0
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+resultLen: {}
+taskId error, please input corrected taskId, isFinsh = False
+---taskResult: b''
+---recvQue.len: 77 b'5qIhab\x00\x00\x00\x00\x00\x00\x00?taskId:20200520#bd8b87dc-9a3a-11ea-a388-00163e158c58;65535;13;5'
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+const header, recvNodId: 0 m_recvNodesNum: 0
+has construct const Header, 0
+has construct variable header
+data: b'65535;13;5'
+handle a packet
+resultLen: {b'20200520#bd8b87dc-9a3a-11ea-a388-00163e158c58': b'65535;13;5'}
+---taskResult: b'65535;13;5'
+UAN recv data: 65535;13;5
+enter into getOnlineNodes 1589938766
+taskId,  20200520#ceddad80-9a3a-11ea-a388-00163e158c58
+create path successfully: /home/kang/graduate/testResult/20200520#ceddad80-9a3a-11ea-a388-00163e158c58
+enter into getOnlineNodes 1589938766
+resultLen: {}
+taskId error, please input corrected taskId, isFinsh = False
+---taskResult: b''
+---recvQue.len: 77 b'5qIhab\x00\x00\x00\x00\x00\x00\x00?taskId:20200520#8974649a-9a3b-11ea-a388-00163e158c58;65535;13;5'
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+const header, recvNodId: 0 m_recvNodesNum: 0
+data: b'65535;13;5'
+handle a packet
+resultLen: {b'20200520#8974649a-9a3b-11ea-a388-00163e158c58': b'65535;13;5'}
+---taskResult: b'65535;13;5'
+UAN recv data: 65535;13;5
+taskId,  20200520#90473aae-9a3b-11ea-a388-00163e158c58
+create path successfully: /home/kang/graduate/testResult/20200520#90473aae-9a3b-11ea-a388-00163e158c58
+viewOnlineNodes
+enter into getOnlineNodes 1589939108
+resultLen: {}
+taskId error, please input corrected taskId, isFinsh = False
+---taskResult: b''
+---recvQue.len: 77 b'5qIhab\x00\x00\x00\x00\x00\x00\x00?taskId:20200520#425270d8-9a3c-11ea-a388-00163e158c58;65535;13;5'
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+const header, recvNodId: 0 m_recvNodesNum: 0
+data: b'65535;13;5'
+handle a packet
+resultLen: {b'20200520#425270d8-9a3c-11ea-a388-00163e158c58': b'65535;13;5'}
+---taskResult: b'65535;13;5'
+UAN recv data: 65535;13;5
+enter into getOnlineNodes 1589939418
+taskId,  20200520#49f69fda-9a3c-11ea-a388-00163e158c58
+create path successfully: /home/kang/graduate/testResult/20200520#49f69fda-9a3c-11ea-a388-00163e158c58
+---recvQue.len: 109 b'5qIhad\x00\x00\x00\x00\x00\x00\x00_20200520#49f69fda-9a3c-11ea-a388-00163e158c58;20200520#49f69fda-9a3c-11ea-a388-00163e158c58.jpg'
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+const header, recvNodId: 0 m_recvNodesNum: 0
+handle a packet
+viewOnlineNodes
+enter into getOnlineNodes 1589939418
+resultLen: {}
+taskId error, please input corrected taskId, isFinsh = False
+---taskResult: b''
+---recvQue.len: 77 b'5qIhab\x00\x00\x00\x00\x00\x00\x00?taskId:20200520#d177f3be-9a3c-11ea-a388-00163e158c58;65535;13;5'
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+const header, recvNodId: 0 m_recvNodesNum: 0
+data: b'65535;13;5'
+handle a packet
+resultLen: {b'20200520#d177f3be-9a3c-11ea-a388-00163e158c58': b'65535;13;5'}
+---taskResult: b'65535;13;5'
+UAN recv data: 65535;13;5
+enter into getOnlineNodes 1589939659
+taskId,  20200520#d9268cec-9a3c-11ea-a388-00163e158c58
+create path successfully: /home/kang/graduate/testResult/20200520#d9268cec-9a3c-11ea-a388-00163e158c58
+---recvQue.len: 109 b'5qIhad\x00\x00\x00\x00\x00\x00\x00_20200520#d9268cec-9a3c-11ea-a388-00163e158c58;20200520#d9268cec-9a3c-11ea-a388-00163e158c58.jpg'
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+const header, recvNodId: 0 m_recvNodesNum: 0
+handle a packet
+viewOnlineNodes
+enter into getOnlineNodes 1589939659
+resultLen: {}
+taskId error, please input corrected taskId, isFinsh = False
+---taskResult: b''
+---recvQue.len: 77 b'5qIhab\x00\x00\x00\x00\x00\x00\x00?taskId:20200520#86906a92-9a3d-11ea-a388-00163e158c58;65535;13;5'
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+const header, recvNodId: 0 m_recvNodesNum: 0
+data: b'65535;13;5'
+handle a packet
+resultLen: {b'20200520#86906a92-9a3d-11ea-a388-00163e158c58': b'65535;13;5'}
+---taskResult: b'65535;13;5'
+UAN recv data: 65535;13;5
+enter into getOnlineNodes 1589939962
+resultLen: {}
+taskId error, please input corrected taskId, isFinsh = False
+---taskResult: b''
+---recvQue.len: 77 b'5qIhab\x00\x00\x00\x00\x00\x00\x00?taskId:20200520#d1550d1c-9a3d-11ea-a388-00163e158c58;65535;13;5'
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+const header, recvNodId: 0 m_recvNodesNum: 0
+data: b'65535;13;5'
+handle a packet
+resultLen: {b'20200520#d1550d1c-9a3d-11ea-a388-00163e158c58': b'65535;13;5'}
+---taskResult: b'65535;13;5'
+UAN recv data: 65535;13;5
+taskId,  20200520#d6c5de02-9a3d-11ea-a388-00163e158c58
+create path successfully: /home/kang/graduate/testResult/20200520#d6c5de02-9a3d-11ea-a388-00163e158c58
+enter into getOnlineNodes 1589940088
+resultLen: {}
+taskId error, please input corrected taskId, isFinsh = False
+---taskResult: b''
+---recvQue.len: 77 b'5qIhab\x00\x00\x00\x00\x00\x00\x00?taskId:20200520#83f0ea9a-9a3e-11ea-a388-00163e158c58;65535;13;5'
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+const header, recvNodId: 0 m_recvNodesNum: 0
+data: b'65535;13;5'
+handle a packet
+resultLen: {b'20200520#83f0ea9a-9a3e-11ea-a388-00163e158c58': b'65535;13;5'}
+---taskResult: b'65535;13;5'
+UAN recv data: 65535;13;5
+taskId,  20200520#891cc674-9a3e-11ea-a388-00163e158c58
+create path successfully: /home/kang/graduate/testResult/20200520#891cc674-9a3e-11ea-a388-00163e158c58
+enter into getOnlineNodes 1589940388
+resultLen: {}
+taskId error, please input corrected taskId, isFinsh = False
+---taskResult: b''
+---recvQue.len: 77 b'5qIhab\x00\x00\x00\x00\x00\x00\x00?taskId:20200520#dfc51f0c-9a3f-11ea-a388-00163e158c58;65535;13;5'
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+const header, recvNodId: 0 m_recvNodesNum: 0
+data: b'65535;13;5'
+handle a packet
+resultLen: {b'20200520#dfc51f0c-9a3f-11ea-a388-00163e158c58': b'65535;13;5'}
+---taskResult: b'65535;13;5'
+UAN recv data: 65535;13;5
+taskId,  20200520#e545cdd2-9a3f-11ea-a388-00163e158c58
+create path successfully: /home/kang/graduate/testResult/20200520#e545cdd2-9a3f-11ea-a388-00163e158c58
+enter into getOnlineNodes 1589940971
+resultLen: {}
+taskId error, please input corrected taskId, isFinsh = False
+---taskResult: b''
+---recvQue.len: 77 b'5qIhab\x00\x00\x00\x00\x00\x00\x00?taskId:20200520#e970afb8-9a6b-11ea-a388-00163e158c58;65535;13;5'
+block the thread for TCP recv data: <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 43794), raddr=('127.0.0.1', 8888)>
+const header, recvNodId:HTTP GET /nodeapp/viewUanEmulation 200 [1.18, 42.48.96.201:28408]

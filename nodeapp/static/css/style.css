@@ -1,0 +1,239 @@
+/* 主体 hello*/
+#body_title{  /*网站标题：欢迎访问***网,学习web开发*/
+    font-family:宋体,'Times New Roman', Times, serif;
+    font-size:20px;
+    text-align:center;
+    width:1000px;
+
+    margin:auto;
+    position:relative;
+    text-shadow: 2px 2px 1px gray;
+}
+
+body{
+    background-color: #EBF5FB;  
+}
+
+#body_preface{ /* 图标：海纳百川容乃大，路行千里始于思 */
+    width:100%;
+    border:1px cornflowerblue solid;
+    background-image: url("picture/fish.jpg");
+    background-size: cover;
+}
+
+#body_preface h1{
+    font-size:30px;
+    text-align: center;
+    color:white;
+}
+
+#container{
+    position: relative;/*整个页面*/
+    /*background-color:white;*/
+    margin:0 auto;
+    width:80%;
+}
+
+#body_home{ /* 网站菜单栏的表头 */
+    position: absolute;
+    z-index:3;
+    width:96%;
+    margin-left: 2%;
+    border-radius:8px;
+}
+
+#body_home ul{
+    padding: 0; /*内边距*/
+    background: rgb(48, 61, 70);  
+    
+    /*border: 1px red solid;*/ 
+}
+#body_home li{
+     /*用了inline就不能用display: inline;*/
+    float: left;
+    list-style-type: none;  /*不显示原点*/
+    background: rgb(143, 207, 250);  
+    
+    white-space: nowrap;  /*不换行*/
+    overflow: hidden; /*内容会被修剪，并且其余内容是不可见的。*/
+    text-overflow: ellipsis;    
+}
+
+#body_home a{
+    font-size: 20px;
+    outline: none;
+    text-decoration: none;
+    display: inline-block;
+    padding: 4pt 20pt;
+    margin-right: 0;
+    text-align: center;
+    line-height: 2;
+    color: black;
+}
+#body_home a:link,a:visited,a:focus{
+     
+    border-radius:8px;/*圆角*/    
+}
+#body_home a:hover{ 
+    background:orange; /*鼠标放在这个区域的时候，该区域浮现橘黄色*/
+}
+#body_home a:active{
+    background:red;/*点击的时候，该区块的颜色*/
+    color: white;/*点击的时候，字的颜色*/
+}
+/*二级菜单*/
+#body_home .xoy_Y{
+    float: none;
+    list-style-type: none;  /*不显示原点*/    
+}
+
+#body_homw .xoy_Y_ul{
+    display: none;
+    z-index: 9999;
+    position: absolute;
+}   
+
+#body_home ul li ul li:hover{
+    background: rebeccapurple;
+}
+
+/*在划过二级菜单所从属的一级菜单的时候，设置为block*/
+#body_home ul li:hover .xoy_Y_ul{  
+    display: block;  /**/
+    float:none;
+}
+/*----------------------*/
+#content{
+    position: relative;
+    width:96%;
+    margin-left: 2%;
+    margin-top: 80px;
+    height: auto;
+    background: rgb(190, 216, 184);
+}
+
+#content p{
+    text-indent: 2em;
+    font-size: 18px;
+}
+#content h1{
+    text-align: center;
+}
+#content h4{
+    text-align: center;
+    background: transparent url("picture/ocean.jpg");
+    height: 500px;
+}
+
+#content_picture1{
+    position: realative;
+    width: 96%;
+    margin-left: 2%;
+    border: 1px red solild;
+    background: rebeccapurple;
+}
+#content .uanMonitor{
+    width:94%;
+    margin-left:3%;
+}
+/*软件仿真*/
+#simulation_l{
+    float: left;
+    margin-left: 2%;
+    width: 55%;
+
+    background-color: rgb(245, 224, 197);
+}
+#simulation_r{
+    float: right;
+    margin-right: 2%;
+    width: 40%;
+    background-color: rgb(245, 224, 197);
+}
+/*硬件仿真*/
+#send_msg{
+    float: left;
+    margin-left: 2%;
+    width: 47.5%;
+    background-color: rgb(245, 224, 197);
+}
+#recv_msg{
+    float: right;
+    margin-right: 2%;
+    width: 47.5%;
+
+    background-color: rgb(245, 224, 197);
+}
+/**/
+#simulation_bottom{
+    clear:both;
+    overflow: hidden;
+    display: block;
+   
+}
+.content_bottom{
+    clear: both; /*消除前面使用float的影响*/
+    overflow: hidden;
+    display: block;
+    width: 1000px;
+    height: 10px;
+    font-size: 0pt;
+}
+
+.body_bottom{
+    margin-top:20px;
+    width: 1000px;
+    padding-top:2px;
+}
+.body_bottom p{
+    text-align: center;
+}
+
+
+.paginated{
+    margin: auto;
+}
+.paginated span{
+    text-align: center;
+}
+
+
+/*  对于仿真结果的表格展示 */
+table{ /*表格增加线宽为3的实线边框*/
+    border: 3px solid rgb(37, 73, 39);
+    text-align: center; /*表格里面的文字居中*/
+    /*margin: auto; auto ,居中 */
+}
+caption{ /*标题*/
+    font-size: 28px;
+}
+td,th{
+    border: 1px solid #EBF5FB;
+    font-size: 18px;
+}
+
+tr:nth-child(1) {
+    background-color: bisque;
+}
+tr:nth-child(odd) td{
+    background-color: rgb(152, 185, 152);
+}
+tr:nth-child(even) td{
+    background-color: rgb(214, 221, 175);
+}
+
+/** realtimemonitor **/
+#realsubmit{
+    margin:auto
+}
+
+/** uan_emulation **/
+#uanEmulation{
+    margin: 20px;
+
+}
+
+#uanEmulation p{
+    text-index: inherit;
+}
+
