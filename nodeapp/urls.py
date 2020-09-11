@@ -82,7 +82,7 @@ urlpatterns+=[
 urlpatterns+=[
     path(r'comment/<int:pf>',views.goodComment,name="GoodComment")
 ]
-#test
+#test1
 # 查看在线节点
 urlpatterns+=[
     path(r'viewOnlineNodes', views.viewOnlineNodes, name = "viewOnline"),
