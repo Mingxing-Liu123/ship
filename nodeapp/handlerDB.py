@@ -175,12 +175,17 @@ def saveshipdata(processdata = []):
     node.vu = processdata[13]
     node.save()
 
+from .ship import wgs84_bd
 def getshippoision():
     node = Ship_msg.objects.get(Ship_ID=1)
     poilist = []
+    convertpoi = [None]*2
     poilist.append(float(node.poi_lat))
     poilist.append(float(node.poi_lng))
-    return poilist
+    print("转换前的坐标：",poilist)
+    convertpoi[0],convertpoi[1] = wgs84_bd.wgs84_bd09(poilist[0],poilist[1])
+    print("转换后的坐标:", convertpoi)
+    return convertpoi
 
 def getshipmsg():
     node = Ship_msg.objects.get(Ship_ID=1)

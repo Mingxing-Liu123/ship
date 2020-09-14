@@ -190,7 +190,7 @@
  $.ajaxSetup({
             data:{csrfmiddlewaretoken:'{{ csrf_token }}'}
         });
-window.setInterval(function(){$.ajax(getting)},10000);   //每三秒调用一次ajax 刷新界面
+window.setInterval(function(){$.ajax(getting)},1000);   //每三秒调用一次ajax 刷新界面
 //theLocation()
 </script>
 

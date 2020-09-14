@@ -325,7 +325,7 @@ function deletePoint(){
                 marker.setLabel(label);
                 //map.addOverlay(label);
                 map.addOverlay(marker);              // 将标注添加到地图中
-                map.panTo(new_point);     //将地图定位至以new_point为中心
+                // map.panTo(new_point);     //将地图定位至以new_point为中心
                 if (trackflag == 1){
                     trackMap.push(new_point);        //push() 方法可向数组的末尾添加一个或多个元素，并返回新的长度
                     label.setContent("跟踪中");
@@ -351,7 +351,7 @@ function deletePoint(){
      	//alert("刷新失败，请重试");
      }
  };
-window.setInterval(function(){$.ajax(getting)},10000);   //每三秒调用一次ajax 刷新界面
+window.setInterval(function(){$.ajax(getting)},1000);   //每三秒调用一次ajax 刷新界面
 </script>
 
 <!--内容结束-->

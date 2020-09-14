@@ -93,7 +93,7 @@ def delrest(datalist = None):
         else:
             break
     return datalist
-#解析数据,若累计接收多个数据包，只去第一个，会造成丢包
+#解析数据,若累计接收多个数据包，只取第一个，会造成丢包
 def parse_gphpd(contentlist,datalen):
     contentlist = contentlist[7:datalen]
     arg = {}

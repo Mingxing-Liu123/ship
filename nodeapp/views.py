@@ -694,9 +694,11 @@ def sendarea(request):
         return HttpResponse("error")
 
 from .handlerDB import getshippoision
+from .ship import wgs84_bd
 def poirefresh(request):
     if request.method == 'POST':
         poilist = handlerDB.getshippoision().copy()
+        # comvertpoi = wgs84_bd.wgs84_to_bd09(poilist[1],poilist[0])
         return HttpResponse(json.dumps(poilist))
     return HttpResponse("error")
 
