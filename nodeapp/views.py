@@ -737,3 +737,5 @@ def onlinenodemsg(request, nodeId):
             "msglist": msglist
         }
     )
+
+#test
