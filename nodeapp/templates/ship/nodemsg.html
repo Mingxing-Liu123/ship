@@ -280,9 +280,9 @@ function clearAllrout(){
 function track(){
        trackflag = 1;
 }
+       trackMap = [];
 function detrack(){
        trackflag = 0;
-       trackMap = [];
 }
 
 function deletePoint(){
@@ -299,7 +299,7 @@ function deletePoint(){
 
 //定时刷新界面（1秒）
    var getting = {
-     url : "msgrefresh", //后台查询验证的方法
+     url : "msgrefresh",
      dataTpye : "json",
      data : {'nodeid':{{nodeId}}
      },

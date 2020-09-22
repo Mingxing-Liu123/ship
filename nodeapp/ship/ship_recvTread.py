@@ -41,11 +41,12 @@ def recv(client_socket, ip_port):
         # 如果接收的消息长度不为0，则将添加到消息队列并处理
         if client_text:
             print("[客户端消息]", ip_port, ":", client_text)
-            # data_list = list(client_text)
             data_list = delrest(list(client_text))
+            # print("delrest:",data_list)
             datalen,cont = getdatalen(data_list)
             # print("datalen,cont:",datalen,cont,len(cont))
             if datalen > len(cont):
+                print("数据不够")
                 continue
             if len(cont) <= 0:
                 continue
@@ -81,18 +82,25 @@ def recv(client_socket, ip_port):
             # print("fd字典：",shiprecvQue.fdmap)
             client_socket.close()
             break
-#删除上个数据包末尾的换行符
+#删除上个数据包不完整的部分
 def delrest(datalist = None):
-    numberstr = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-    while True:
-        if len(datalist) <= 0:
-            return
-        if not datalist[0] in numberstr:
-            datalist = datalist[1:]
-            continue
-        else:
-            break
-    return datalist
+    dlist = datalist.copy()
+    indexlist = []
+    cont = []
+    for i in range(len(dlist)):
+        if dlist[i] == '$':
+            indexlist.append(i)
+    # print("indexlist:",indexlist)
+    if len(indexlist) == 0:
+        return  cont
+    for i in range(len(indexlist)):
+        if indexlist[i] >= 4:
+            cont = dlist[indexlist[i]-4:]
+            # print("cont1:",cont)
+            return cont
+    # print("cont2:", cont)
+    return cont
+
 #解析数据,若累计接收多个数据包，只取第一个，会造成丢包
 def parse_gphpd(contentlist,datalen):
     contentlist = contentlist[7:datalen]
@@ -111,23 +119,33 @@ def parse_gphpd(contentlist,datalen):
         processdata[index] = float(''.join(lt))
     saveshipdata(processdata)
     print("recvadmin:",processdata)
-#得到数据包的长度
+#得到数据包的长度,这里只针对gphpd数据，只考虑长度在145-160之间的数据，
 def getdatalen(data_list = None):
     datalen = int(0)
     cont = None
+    if len(data_list) == 0:
+        return datalen,cont
     lengthlist = data_list[0:2]
     if lengthlist[1] == ',':
         datalen = int(lengthlist[0])
         cont = data_list[2:]
-        return datalen,cont
-    else :
+        return datalen, cont
+    else:
         lengthlist += data_list[2]
         if lengthlist[2] == ',':
             datalen = int(lengthlist[0]) * 10 + int(lengthlist[1])
             cont = data_list[3:]
-            return datalen,cont
+            return datalen, cont
         else:
-            datalen = int(lengthlist[0])*100 +int(lengthlist[1])*10 +int(lengthlist[2])
+            datalen = int(lengthlist[0]) * 100 + int(lengthlist[1]) * 10 + int(lengthlist[2])
             cont = data_list[4:]
             shiprecvQue.getNBytes(1)
-            return datalen,cont
+            return datalen, cont
+
+def isvalid(lenlist = None):
+    datalist = lenlist.copy()
+    numberstr = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    for index in range(len(lenlist)):
+        if not lenlist[index]  in numberstr:
+            return False
+    return True

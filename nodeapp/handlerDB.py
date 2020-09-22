@@ -182,9 +182,9 @@ def getshippoision():
     convertpoi = [None]*2
     poilist.append(float(node.poi_lat))
     poilist.append(float(node.poi_lng))
-    print("转换前的坐标：",poilist)
+    # print("转换前的坐标：",poilist)
     convertpoi[0],convertpoi[1] = wgs84_bd.wgs84_bd09(poilist[0],poilist[1])
-    print("转换后的坐标:", convertpoi)
+    # print("转换后的坐标:", convertpoi)
     return convertpoi
 
 def getshipmsg():
@@ -193,8 +193,9 @@ def getshipmsg():
     poilist.append(node.heading)
     poilist.append(node.pitch)
     poilist.append(node.roll)
-    poilist.append(node.poi_lat)
-    poilist.append(node.poi_lng)
+    lat,lon = wgs84_bd.wgs84_bd09(float(node.poi_lat),float(node.poi_lng))
+    poilist.append(lat)
+    poilist.append(lon)
     poilist.append(node.alt)
     poilist.append(node.ve)
     poilist.append(node.vn)
