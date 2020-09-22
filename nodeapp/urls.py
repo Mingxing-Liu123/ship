@@ -104,3 +104,4 @@ urlpatterns+=[
     path(r'viewonlinenodemsg/sendlineroute', views.sendlineroute, name = "sendlineroute"),
     path(r'viewonlinenodemsg/<int:nodeId>', views.onlinenodemsg, name = "onlinenodemsg"),
 ]
+#2
