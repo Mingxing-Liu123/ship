@@ -1,8 +1,8 @@
 import json
-import urllib
+# import urllib
 import math
-from urllib.request import urlopen, quote
-import string
+# from urllib.request import urlopen, quote
+# import string
 
 x_pi = 3.14159265358979324 * 3000.0 / 180.0
 pi = 3.1415926535897932384626  # π

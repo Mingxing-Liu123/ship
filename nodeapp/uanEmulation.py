@@ -19,7 +19,7 @@ class UanNodeAdmin:
             self.m_updataTime = 0
 
     def getOnlineNodes(self):
-        print("enter into getOnlineNodes",self.m_updataTime)
+        # print("enter into getOnlineNodes",self.m_updataTime)
         currentTime = int(time.time())
         span = currentTime - self.m_updataTime
         if self.m_updataTime == 0 or span >= self.m_timeSpan:
@@ -29,15 +29,15 @@ class UanNodeAdmin:
             if len(resultBytes) != 0:
                 resultStr = resultBytes.decode()
 
-                print("UAN recv data:", resultStr)
-                nodeIdList = resultStr.split(";")
+                print("onlinenode:", resultStr)
+                nodeIdList = resultStr.split(",")
                 nodeIdListInt = []
                 try:
                     for node in nodeIdList:
                         nodeIdListInt.append(int(node))
                 except Exception as e:
-                    print("exception:",e)
                     return []
+                    print("exception:",e)
                 nodeIdListInt.sort()
                 self.m_nodeID = nodeIdListInt
         

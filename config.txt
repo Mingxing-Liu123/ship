@@ -3,8 +3,10 @@
         0,
         1
     ],
-    "nodeID0":["127.0.0.1","kang","lab408"],
-    "nodeID1":["127.0.0.1","root", "357"],
-    "resultDir":"/home/kang/graduate/testResult/",
-    "resultZipDir":"/home/kang/graduate/testZipResult/"
+    "nodeID0":["8.129.210.67","root","Lab408408"],
+    "nodeID1":["127.0.0.1","lmx", "666"],
+    "sendDir":"/home/lmx/lmx/Union_Test_2/sendfile/",
+    "sendzipDir":"/home/lmx/lmx/Union_Test_2/sendzip/",
+    "recDir":"/home/lmx/lmx/Union_Test_2/uan_server/data",
+    "recvZipDir":"/home/lmx/lmx/Union_Test_2/recvzip/"
 }

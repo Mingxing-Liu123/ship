@@ -2,6 +2,7 @@ from django.db import models
 import datetime
 from django.utils import timezone
 from django.urls import reverse
+from django.urls import reverse
 from django.contrib.auth.models import User  #从django中的模型导入用户模型。
 #表明每个用户做仿真的时候所设置了参数，一个用户可能对应多个参数设置
 
@@ -252,7 +253,7 @@ class UanEmulation(models.Model):
 
 # 无人船信息
 class Ship_msg(models.Model):
-    Ship_ID = models.IntegerField(primary_key=True,default = 1, help_text="节点逻辑序号,从1开始计数")  #
+    Ship_ID = models.IntegerField(primary_key=True,default = 0, help_text="节点逻辑序号,从1开始计数")  #
     heading = models.FloatField(null=True, blank=True, help_text="偏航角0")
     pitch = models.FloatField(null=True, blank=True, help_text="俯仰角1")
     roll = models.FloatField(null=True, blank=True, help_text="横滚角2")
@@ -267,4 +268,20 @@ class Ship_msg(models.Model):
     def __str__(self):
         return str(self.Ship_ID)
 
+class onlineslist(models.Model):
+    flag = models.IntegerField(primary_key=True,default = 0, help_text="无人船在线节点列表")
+    nodelist = models.CharField(max_length=255,default= '',help_text="在线节点")
+
+
+class shipp2ptest(models.Model):
+    testname = models.CharField(max_length=255, help_text="testname")
+    srcFilePath = models.CharField(max_length=255, help_text="the srcFilePath")
+    recvFilesPath = models.CharField(max_length=255, help_text="the recv files ")
+    testTime = models.DateTimeField(auto_now=True, help_text="the emulated time")
+
+    def __str__(self):
+        return self.srcFilePath
+
+    def get_absolute_url(self):
+        return reverse("shipp2p_detail", args=[str(self.id)])
     

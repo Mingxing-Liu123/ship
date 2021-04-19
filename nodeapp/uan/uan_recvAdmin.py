@@ -18,15 +18,15 @@ class UAN_RecvManager(threading.Thread):
             return 
         rQue = uan_recvQue.recvQue
         rQue.setFd(self.m_fd)
-
+        datatype = None
         i = 0
-        while True:     
+        while True:
             if rQue.getQueLen() <= 0:
                 continue
 
             if uan_recvQue.chManager.isFinished(self.m_fd):
                 if i == 0:
-                    print("has construct const Header,", i)
+                    print("has construct const Header,")
                     i = i + 1
                 #print("has construct const header")
                 if uan_recvQue.vhManager.isFinished(self.m_fd):
@@ -34,7 +34,7 @@ class UAN_RecvManager(threading.Thread):
                         print("has construct variable header")
                         i = i + 1
                     webTask = uan_task.Web_Task(self.m_fd)
-                    webTask.run()
+                    webTask.run(datatype)
                     uan_recvQue.chManager.eraseFd(self.m_fd)
                     uan_recvQue.vhManager.eraseFd(self.m_fd)
                     uan_recvQue.contentM.eraseFd(self.m_fd)
@@ -44,7 +44,7 @@ class UAN_RecvManager(threading.Thread):
                 else: # construct vheader
                     
                     length = rQue.getQueLen()
-                    #print("construct varHeader. len:",length)
+                    # print("varHeadlen:",length)
                     vhList = uan_recvQue.chManager.getVarHeaderValue(self.m_fd)
                     # print("vhlist:",vhList[0],vhList[1])
                     if len(vhList) >= 2:
@@ -58,10 +58,12 @@ class UAN_RecvManager(threading.Thread):
                         print("vhList.size<= 2,",len(vhList))
             else: # construct cheader
                 length = rQue.getQueLen()
-                #print("recvQue,%d",length)
+                # print("cheadlen:",length)
                 if length >= uan_common.kConstHeaderLen:
                     chData = rQue.getNBytes(uan_common.kConstHeaderLen)
                     uan_recvQue.chManager.push(self.m_fd, chData)
                     contentLen = uan_recvQue.chManager.getContentLen(self.m_fd)
+                    datatype = uan_recvQue.chManager.getdatatype(self.m_fd)
+                    print("datatype:",datatype,type(datatype))
                     uan_recvQue.contentM.setFd(self.m_fd, contentLen)
 

@@ -2,14 +2,17 @@
 
 
 #part 1
-kRequest = 'a'
-kReply   = 'b'
+kRequest = chr(0x01)
+# kRequest = 'a'
+kReply   = chr(0x02)
 
 #part 2
-kOnlineNodes = 'a'    # select online nodes
+kOnlineNodes = chr(0x22)
+Kcheckprogress = chr(0x21)
+# kOnlineNodes = 'a'    # select online nodes
 kNodeMsg = 'b'        # select node's msg
 kNs3 = 'c'
-kOne2Many = 'd'       # emulation, one2many, this character is useful for web server
+kOne2Many = chr(0x20)       # emulation, one2many, this character is useful for web server
 kOne2ManyServer = 'e' # emulation, it is useful for real UAN node
 kOne2ManyClient = 'f' # emulation, it is useful for real UAN node
 

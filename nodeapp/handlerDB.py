@@ -115,6 +115,7 @@ class UanEmulationDBHandler:
         uanEmulationTable.save()
             
     def saveResultAfterEmulated(taskId, emuFilesPath):
+        print("come to db")
         try:
             uanEmulationTable = UanEmulation.objects.get(taskID = taskId)
             uanEmulationTable.emuFilesPath = emuFilesPath
@@ -161,7 +162,7 @@ class UanEmulationDBHandler:
             return ""
 
 from .models import Ship_msg
-#将实时获取的数据保存到(Ship_ID=1)的Ship_msg中
+#将实时获取的数据保存到(Ship_ID=nodeid)的Ship_msg中
 def saveshipdata(processdata = []):
     node = Ship_msg.objects.get(Ship_ID=1)
     node.heading = processdata[2]
@@ -175,20 +176,41 @@ def saveshipdata(processdata = []):
     node.vu = processdata[13]
     node.save()
 
-from .ship import wgs84_bd
-def getshippoision():
-    node = Ship_msg.objects.get(Ship_ID=1)
-    poilist = []
-    convertpoi = [None]*2
-    poilist.append(float(node.poi_lat))
-    poilist.append(float(node.poi_lng))
-    # print("转换前的坐标：",poilist)
-    convertpoi[0],convertpoi[1] = wgs84_bd.wgs84_bd09(poilist[0],poilist[1])
-    # print("转换后的坐标:", convertpoi)
-    return convertpoi
+def saveshippos(processdata = []):
+    nodeid = processdata[0]
+    try:
+        node = Ship_msg.objects.get(Ship_ID= nodeid)
+        node.poi_lat = processdata[1]
+        node.poi_lng = processdata[2]
+        node.save()
+        # print("have:",nodeid,"nodeid")
+    except Exception as e:
+        newNode = Ship_msg()
+        newNode.Ship_ID = nodeid
+        newNode.poi_lat = processdata[1]
+        newNode.poi_lng = processdata[2]
+        newNode.other = 'other'
+        newNode.save()
+        # print("have created:",nodeid)
 
-def getshipmsg():
-    node = Ship_msg.objects.get(Ship_ID=1)
+from .ship import wgs84_bd
+def getshippoision(onlinenode =None):
+    poilist = []
+    nodes_len =len(onlinenode)
+    for i in range(nodes_len):
+        try:
+            node = Ship_msg.objects.get(Ship_ID=int(onlinenode[i]))
+            convertpoi = [None]*2
+            # print("转换前的坐标：",poilist)
+            convertpoi[0],convertpoi[1] = wgs84_bd.wgs84_bd09(float(node.poi_lat),float(node.poi_lng))
+            poilist.append(convertpoi[0])
+            poilist.append(convertpoi[1])
+            # print("转换后的坐标:", convertpoi)
+        except Exception as e:
+            return []
+    return poilist
+def getshipmsg(nodeid =1):
+    node = Ship_msg.objects.get(Ship_ID=int(nodeid))
     poilist = []
     poilist.append(node.heading)
     poilist.append(node.pitch)
@@ -201,3 +223,52 @@ def getshipmsg():
     poilist.append(node.vn)
     poilist.append(node.vu)
     return poilist
+
+from .models import shipp2ptest
+def saveship_p2p_para(Testname,sourcefile_name):
+    try:
+        ship_p2p_history = shipp2ptest.objects.get(testname=Testname)
+        ship_p2p_history.srcFilePath = sourcefile_name
+        # ship_p2p_history.recvFilesPath = 'recv' + sourcefile_name
+        ship_p2p_history.save()
+    except Exception as e:
+        print("creat ship_p2p_history")
+        newp2p_history = shipp2ptest()
+        newp2p_history.testname = Testname
+        newp2p_history.srcFilePath = sourcefile_name
+        # newp2p_history.recvFilesPath = 'xx'
+        newp2p_history.save()
+
+def getshipsourcedir(primaryKey):
+        try:
+            shipEmulationTable = shipp2ptest.objects.get(id = primaryKey)
+            return shipEmulationTable.srcFilePath
+        except Exception as e:
+            print(e)
+            return ""
+
+def getshipResultdir(primaryKey):
+        try:
+            shipEmulationTable = shipp2ptest.objects.get(id = primaryKey)
+            resultdir = 'r' + shipEmulationTable.srcFilePath
+            return resultdir
+        except Exception as e:
+            print(e)
+            return ""
+
+def saverecvfileresult(Testname,filename):
+    try:
+        ship_p2p_history = shipp2ptest.objects.get(testname=Testname)
+        ship_p2p_history.recvFilesPath = 'r' + filename
+        ship_p2p_history.save()
+    except Exception as e:
+        print(e)
+        return ""
+
+def deleteshipParam(primaryKey):
+    try:
+        deletedParam = shipp2ptest.objects.get(id = primaryKey)
+        deletedParam.delete()
+    except:
+        return False
+    return True

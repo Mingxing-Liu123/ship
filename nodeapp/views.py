@@ -13,8 +13,9 @@ def publicHistory(request):
         context={},
     )
 
-from django.views import generic    
+from django.views import generic
 from . import models
+
 
 class ManagementListView(generic.ListView):
     model = models.Management
@@ -186,27 +187,14 @@ def downloadfile(request,pf):
     response =StreamingHttpResponse(file_iterator(the_file_name))   #这里创建返回
     response['Content-Type'] = 'application/octet-stream'   #注意格式 
     response['Content-Disposition'] = 'attachment;filename="history.txt"'   #注意filename 这个是下载后的名字
-    return response        
+    return response
 
 
 # ---------------------------------------------------------
 # def terminalSSH(request): #为终端测试界面视图
 # ---------------------------------------------------------
-from .handlerFile import ConfigCenter 
-def terminalSSH(request, nodeId):
-    if not request.user.is_authenticated:
-        return render(
-            request,
-            "index.html",
-        )
-    nodeIdInt = nodeId
-    return render(
-        request,
-        "WebTerminal/terminal.html",
-        {
-            "nodeId":nodeIdInt
-        }
-    )
+from .handlerFile import ConfigCenter
+
 # 选择连接哪个终端
 def selectNodeTerminal(request):
     if not request.user.is_authenticated:
@@ -218,9 +206,9 @@ def selectNodeTerminal(request):
     nodeIDs = config.getNodes()
     return render(
         request,
-        "WebTerminal/terminalOption.html",
+        "WebTerminal/terminal.html",
         {
-            "nodeIDs":nodeIDs    
+            "nodeId":0
         }
     )
 #---------------------------------------------------------
@@ -233,7 +221,6 @@ def nodeEnviro(request):
         "Emulation/envir_param.html",
     )
 #硬件仿真
-from .models import Emulation_Test
 from .tasks import Get_Oline_Nodes
 #from .handlerFile import saveUploadedFile
 from .handlerDB import getRawNodes
@@ -275,7 +262,7 @@ def hardwareEmulation(request):
         "Emulation/hardware_emulation.html",
         {
             "All_Nodes":All_Nodes, #
-            'UpLoadFile_Result':UpLoadFile_Result,
+            'UpLoadFile_Result':ns3_simulation,
         }
     )
 
@@ -287,7 +274,7 @@ def commentArea(request)
 留言板
 ==========================================================="""
 
-from .models import Message_Board,Topic 
+from .models import Topic
 from .form import Topic_Form
 def commentArea(request):
     #对所有人都可见
@@ -379,10 +366,10 @@ def goodComment(request,pf):
 #查看在线节点数量,以及查看节点情况
 #===================================================================
 #"""
-from .uan import uan_result, uan_client
+from .uan import uan_client
 from .uanEmulation import UanNodeAdmin
 def viewOnlineNodes(request):
-    print("viewOnlineNodes")
+    # print("viewOnlineNodes")
     nodeIdList = []
     isLogin = False
     nodeAdmin = UanNodeAdmin()
@@ -444,6 +431,7 @@ def uanEmulation(request):
         if request.method == "GET":
             nodeAdmin = UanNodeAdmin()
             onlineNodes = nodeAdmin.getOnlineNodes()
+
         elif request.method == "POST" : # post
             userFile = request.FILES.get("emuFile")
             sendNodeId = request.POST.get("sendNodeId")
@@ -452,7 +440,7 @@ def uanEmulation(request):
             if userFile:
                 client = uan_client.UanSimulationClient()
                 taskId = client.getTaskId()
-                print("taskId, ",taskId) 
+                # print("taskId, ",taskId)
                 
                 nodeIds = []
                 nodeIds.append(int(sendNodeId))
@@ -464,7 +452,7 @@ def uanEmulation(request):
                         taskId,
                         nodeIds)
                 filePath = fileSaver.save()
-
+                # print("filePath:",filePath)
                 UanEmulationDBHandler.saveParamBeforeEmulated(
                     taskId, 
                     request.user,
@@ -480,6 +468,7 @@ def uanEmulation(request):
                     taskId, 
                     UanEmulationDBHandler.saveResultAfterEmulated # callback
                 )
+
                 emulatedStatus = "Running"
     return render(
         request,
@@ -489,6 +478,66 @@ def uanEmulation(request):
             "emulatedStatus":emulatedStatus
         }
     )
+
+def terminalSSH(request, nodeId):
+    if not request.user.is_authenticated:
+        return render(
+            request,
+            "index.html",
+        )
+    nodeIdInt = nodeId
+    onlineNodes = []
+    emulatedStatus = "None"
+    if request.user.is_authenticated:
+        if request.method == "GET":
+            nodeAdmin = UanNodeAdmin()
+            onlineNodes = nodeAdmin.getOnlineNodes()
+
+        elif request.method == "POST":  # post
+            userFile = request.FILES.get("emuFile")
+            sendNodeId = request.POST.get("sendNodeId")
+            recvNodeIds = request.POST.getlist("recvNodeIds")
+
+            if userFile:
+                client = uan_client.UanSimulationClient()
+                taskId = client.getTaskId()
+                # print("taskId, ",taskId)
+
+                nodeIds = []
+                nodeIds.append(int(sendNodeId))
+                for nodeId in recvNodeIds:
+                    nodeIds.append(int(nodeId))
+
+                fileSaver = handlerFile.saveUANEmulationResultToFile(
+                    userFile,
+                    taskId,
+                    nodeIds)
+                filePath = fileSaver.save()
+                # print("filePath:",filePath)
+                UanEmulationDBHandler.saveParamBeforeEmulated(
+                    taskId,
+                    request.user,
+                    filePath,
+                    nodeIds[0],
+                    nodeIds[1:]
+                )
+
+                # client.getFileResult(nodeIds, filePath)
+                client.async_getFileResult(
+                    nodeIds,
+                    filePath,
+                    taskId,
+                    UanEmulationDBHandler.saveResultAfterEmulated  # callback
+                )
+    return render(
+        request,
+        "WebTerminal/terminal.html",
+        {
+            "nodeId":nodeIdInt,
+            "onlineNodes": onlineNodes
+        }
+    )
+
 def uanEmulationForNs3(request):
 
     if request.user.is_authenticated:
@@ -508,28 +557,57 @@ class UanEmulationListView(generic.ListView):
 def downloadUanEmulationSource(request, pf):
     if not request.user.is_authenticated:
         return HttpResponse("please login in")
-    
-    def file_iterator(file_name, chunk_size=512):#用于形成二进制数据
-        with open(file_name,'rb') as f:
+
+    taskId = handlerDB.UanEmulationDBHandler.getEmuTaskId(pf)
+    print("get taskID:", taskId)
+    if len(taskId) == 0:
+        return HttpResponse("can't find the result, please input correct one")
+
+    zipHandler = handlerFile.UanResultZip(taskId)
+    if not zipHandler.hasendzipfile():
+        zipHandler.createZipFile(2)
+    sendzipFilePath = zipHandler.getsendZipFileDir()
+
+    def file_iterator(file_name, chunk_size=512):  # 用于形成二进制数据
+        with open(file_name, 'rb') as f:
             while True:
                 c = f.read(chunk_size)
                 if c:
                     yield c
                 else:
                     break
-    #写入文件
-    filePath = handlerDB.UanEmulationDBHandler.getSrcFilePath(primaryKey = pf)
-    if len(filePath) == 0:
-        return HttpResponse("error emulation")
- 
-    fileNameList = filePath.split('/')
-    fileName = fileNameList[-1]
 
-    response =StreamingHttpResponse(file_iterator(filePath))   #这里创建返回
-    response['Content-Type'] = 'application/octet-stream'   #注意格式 
-    response['Content-Disposition'] = 'attachment;filename="'   #注意filename 这个是下载后的名字
-    response['Content-Disposition'] += fileName + '"'
-    return response        
+    # 写入文件
+
+    response = StreamingHttpResponse(file_iterator(sendzipFilePath))  # 这里创建返回
+    response['Content-Type'] = 'application/octet-stream'  # 注意格式
+    response['Content-Disposition'] = 'attachment;filename=source"'  # 注意filename 这个是下载后的名字
+    response['Content-Disposition'] +=  '.zip"'
+    return response
+    # if not request.user.is_authenticated:
+    #     return HttpResponse("please login in")
+    #
+    # def file_iterator(file_name, chunk_size=512):#用于形成二进制数据
+    #     with open(file_name,'rb') as f:
+    #         while True:
+    #             c = f.read(chunk_size)
+    #             if c:
+    #                 yield c
+    #             else:
+    #                 break
+    # #写入文件
+    # filePath = handlerDB.UanEmulationDBHandler.getSrcFilePath(primaryKey = pf)
+    # if len(filePath) == 0:
+    #     return HttpResponse("error emulation")
+    #
+    # fileNameList = filePath.split('/')
+    # fileName = fileNameList[-1]
+    #
+    # response =StreamingHttpResponse(file_iterator(filePath))   #这里创建返回
+    # response['Content-Type'] = 'application/octet-stream'   #注意格式
+    # response['Content-Disposition'] = 'attachment;filename="'   #注意filename 这个是下载后的名字
+    # response['Content-Disposition'] += fileName + '"'
+    # return response
 
 def deleteUanEmulation(request, pf): 
     if not request.user.is_authenticated:
@@ -538,8 +616,7 @@ def deleteUanEmulation(request, pf):
     handlerDB.UanEmulationDBHandler.deleteParam(primaryKey = pf)
     return HttpResponseRedirect("/nodeapp/uanHistory")
 
-import zipfile, tempfile, os
-from wsgiref.util import FileWrapper
+
 def downloadUanEmulationResult(request, pf):
     if not request.user.is_authenticated:
         return HttpResponse("please login in")
@@ -551,7 +628,7 @@ def downloadUanEmulationResult(request, pf):
 
     zipHandler = handlerFile.UanResultZip(taskId)
     if not zipHandler.hasZipFile():
-        zipHandler.createZipFile()
+        zipHandler.createZipFile(1)
     zipFilePath = zipHandler.getZipFileDir()
 
     def file_iterator(file_name, chunk_size=512):#用于形成二进制数据
@@ -566,87 +643,93 @@ def downloadUanEmulationResult(request, pf):
 
     response =StreamingHttpResponse(file_iterator(zipFilePath))   #这里创建返回
     response['Content-Type'] = 'application/octet-stream'   #注意格式 
-    response['Content-Disposition'] = 'attachment;filename="'   #注意filename 这个是下载后的名字
-    response['Content-Disposition'] += taskId + '.zip"'
+    response['Content-Disposition'] = 'attachment;filename=recv"'   #注意filename 这个是下载后的名字
+    response['Content-Disposition'] += '.zip"'
     return response        
 
-"""
-    filesPath = handlerDB.UanEmulationDBHandler.getEmuResultFilePath(pf)
-    filesPath = "/home/kang/tempUpload"
-    if len(filesPath) == 0:
-        return HttpResponse("can't find the result, because it have no finish")
-    tempZipFile = tempfile.TemporaryFile()
-
-    archive = zipfile.ZipFile(tempZipFile, 'w', zipfile.ZIP_DEFLATED)
-    for path, dirName, fileNames in os.walk(filesPath):
-        fpath = path.replace(filesPath, '')
-        #print("fpath:", fpath)
-        for fileName in fileNames:
-            archive.write(os.path.join(path, fileName), os.path.join(fpath, fileName))
-    archive.close() 
-   
-    tempLen = tempZipFile.tell()
-    tempZipFile.seek(0)
-    
-    wrapper = FileWrapper(tempZipFile)
-    response = HttpResponse(wrapper, content_type = "application/zip")
-    response['Content-Disposition'] = 'attachment; filename=result.zip'
-    response['Content-Length'] = tempLen
-
-    return response
-"""
 # ---------------------------------------------------------
 # def index(request):  显示首页的函数
 # ---------------------------------------------------------
-from .ship import Socket_tcp ,ship_recQue,ship_recvTread
-from .ship import ship_result
-from .models import Ship_msg
+from .ship import route, Socket_tcp
 def index(request):
-    #第一次创建Ship_msg模型时需要该代码,数据库保存后就不需要了
-    # try:
-    #     nodeNote = Ship_msg.objects.get(Ship_ID= 1 )
-    # except Exception as e:
-    #     newNode = Ship_msg()
-    #     newNode.Ship_ID = 1
-    #     newNode.poi_lat = 39.1621281
-    #     newNode.poi_lng = 113.3529971
-    #     newNode.other = 'other'
-    #     newNode.save()
-    # nodeNote = Ship_msg.objects.get(Ship_ID=1)
-    # nodeNote.heading = -3.12
-    # nodeNote.save()
-    # print(nodeNote.heading)
-    tcplink = Socket_tcp.tcp_serlisen()  # 开启tcp服务器监听以及接收消息线程,消息处理线程
-    onlinens = [1,2,3]
-
+    tcp_ser=Socket_tcp.tcp_serlisen()
+    onlinens = []
     return render(
         request,
-        #"buildTest/index.html",
-        "index.html",
+        "index1.html",
         {
-            "data": ship_recQue.shiprecvQue.m_que,
-            "data1": ship_result.ship_results.otherdata,
-            # "data2": ship_result.ship_results.gphpd_data,
-            "onlinenodes": onlinens
+            "onlinenodes": onlinens,
         }
     )
-#
-from .ship import route
-from math import cos, sin, atan2, sqrt, radians, degrees
-from .ship import route
-from .ship import ship_send
 
 ####发送命令到无人船进行远程控制
 def sendcommand(request):
     if request.method == 'POST':
-        res = ship_send.sendcomtoship()
+        nodeid = request.POST.get('nodeid')
+        # print("comment前端发来的：",nodeid,type(nodeid))
+        tcp_ser = Socket_tcp.tcp_serlisen()
+        res=tcp_ser.sendtocli('hello', nodeid)
+        # res = ship_send.sendcomtoship()
         if res == True:
             return HttpResponse("OK!")
     return HttpResponse("error")
-
+###发送点到无人船
+def sendpointroute(request):
+    tcp_listen = Socket_tcp.tcp_serlisen()
+    if request.method == 'POST':
+        print("line前端发来的：aaa")
+        nodeid = request.POST.get('nodeid')
+        if 'lineroute' in request.POST:
+            poilist = []
+            poilist = request.POST.getlist('lineroute', [])
+            print("初始发送的点:", poilist, len(poilist) / 2)
+            linelen = int(len(poilist) / 2 - 1)  # 线段数目
+            addnode = int(10 - (len(poilist) / 2))  # 要加点的个数
+            if len(poilist) <= 20:  # 无人船接收端只能接受10个点,若不够,则加点
+                if linelen >= addnode:  # 线段数目大于等于要加点的个数
+                    for index in range(addnode):
+                        center = route.creatcenter(poilist[4 * index:4 * index + 4])
+                        poilist.insert(4 * index + 2, center[0])
+                        poilist.insert(4 * index + 3, center[1])
+                        # print(center)
+                    # print(poilist,len(poilist))
+                else:
+                    z = int(addnode // linelen)
+                    y = int(addnode % linelen)
+                    # print(z,y)
+                    for index in range(linelen):
+                        newnode = route.creatpnode(z, poilist[(2 + 2 * z) * index:(2 + 2 * z) * index + 4])
+                        # print("增加的点1:",newnode)
+                        for i in range(len(newnode)):
+                            poilist.insert((2 + 2 * z) * index + 2 + i, newnode[i])
+                        # print(poilist)
+                    if y != 0:
+                        newnode = route.creatpnode(y, poilist[0:4])
+                        # print("增加的点2:", newnode)
+                        for index in range(len(newnode)):
+                            poilist.insert(2 + index, newnode[index])
+                print("补充发送的点:", poilist, len(poilist) / 2)
+                # res = ship_send.sendlinetoship(poilist,nodeid)
+                res = False
+                for index in range(int(len(poilist) / 2)):
+                    msg = '$,'
+                    msg += poilist[index * 2]
+                    msg += ','
+                    msg += poilist[index * 2 + 1]
+                    sendmsg = msg + ',*'
+                    # tcp_send = Socket_tcp.tcp_serlisen()
+                    res = tcp_listen.sendtocli(sendmsg, nodeid)
+                if res == True:
+                    return HttpResponse("OK!")
+            else:
+                return HttpResponse("error")
+    return HttpResponse("error")
 ######发送线段到无人船
 def sendlineroute(request):
+    tcp_listen = Socket_tcp.tcp_serlisen()
     if request.method == 'POST':
+        nodeid = request.POST.get('nodeid')
+        # print("line前端发来的：",nodeid)
         if 'lineroute' in request.POST:
             poilist = []
             poilist = request.POST.getlist('lineroute',[])
@@ -677,7 +760,16 @@ def sendlineroute(request):
                         for index in range(len(newnode)):
                             poilist.insert(2+index,newnode[index])
                 print("补充发送的点:",poilist,len(poilist)/2)
-                res = ship_send.sendlinetoship(poilist)
+                # res = ship_send.sendlinetoship(poilist,nodeid)
+                res = False
+                for index in range(int(len(poilist) / 2)):
+                    msg = '$,'
+                    msg += poilist[index * 2]
+                    msg += ','
+                    msg += poilist[index * 2 + 1]
+                    sendmsg = msg + ',*'
+                    # tcp_send = Socket_tcp.tcp_serlisen()
+                    res = tcp_listen.sendtocli(sendmsg, nodeid)
                 if res == True:
                     return HttpResponse("OK!")
             else:
@@ -693,12 +785,19 @@ def sendarea(request):
             return HttpResponse("OK!")
         return HttpResponse("error")
 
-from .handlerDB import getshippoision
-from .ship import wgs84_bd
+
+from .handlerFile import get_from_file_nodes
 def poirefresh(request):
+    # tcp_listen = tcp_serlisen()
     if request.method == 'POST':
-        poilist = handlerDB.getshippoision().copy()
-        return HttpResponse(json.dumps(poilist))
+        onlinenodes = get_from_file_nodes()
+        # onlinenodes=[1,2]
+        sort_onlinenodes = sorted(onlinenodes)
+        # print("在线节点：",onlinenodes)
+        poilist = handlerDB.getshippoision(sort_onlinenodes)
+        ajax_map ={'onlinenodes':sort_onlinenodes,'poilist':poilist}
+        # print("ajax_map:",ajax_map)
+        return HttpResponse(json.dumps(ajax_map))
     return HttpResponse("error")
 
 def msgarefresh(request):
@@ -706,20 +805,10 @@ def msgarefresh(request):
         if 'nodeid' in request.POST:
             node_id = request.POST.get('nodeid')
             # print("nodeid:",node_id)
-        msglist = handlerDB.getshipmsg().copy()
+        msglist = handlerDB.getshipmsg(node_id).copy()
         return HttpResponse(json.dumps(msglist))
     return HttpResponse("error")
 
-from .ship import Socket_tcp ,ship_recQue,ship_recvTread
-import time
-def viewpoision(request):
-    return render(
-        request,
-        "ship/test.html",
-        {
-            "data": Socket_tcp.shiprecvQue.m_que
-        }
-    )
 
 def onlinenodemsg(request, nodeId):
     if not request.user.is_authenticated:
@@ -727,15 +816,147 @@ def onlinenodemsg(request, nodeId):
             request,
             "index.html",
         )
-    nodeIdInt = nodeId
-    msglist = handlerDB.getshipmsg().copy()
+    nodeid = nodeId
+    # print("xxxxxxx:",nodeid)
+    # msglist = handlerDB.getshipmsg(nodeid).copy()
     return render(
         request,
-        "ship/nodemsg.html",
+        "ship/nodemsg1.html",
         {
-            "nodeId": nodeIdInt,
-            "msglist": msglist
+            "nodeId": nodeid
+            # "msglist": msglist
         }
     )
 
+from .form import shipp2p_Form
+from .handlerDB import saveship_p2p_para
+import threading
 
+def nodetest(request):
+    tcp_listen = Socket_tcp.tcp_serlisen()
+    onlinens=[]
+    res = False
+    if request.user.is_authenticated:
+        if request.method == "GET":
+            onlinens = get_from_file_nodes()
+            form_request = shipp2p_Form()
+        elif request.method == "POST":
+            form_request = shipp2p_Form(request.POST)
+            if form_request.is_valid():  # 检查字符
+                TestName = form_request.cleaned_data['TestName']
+                # print("testname:",TestName)
+                userFile = request.FILES.get("emuFile")
+                sendNodeId = request.POST.get("sendNodeId")
+                recvNodeIds = request.POST.getlist("recvNodeIds")
+                # print("sendnode,recvnodes",sendNodeId,recvNodeIds)
+                # print("uploadfile:",userFile)
+                # print(userFile.name.split('.')[-1],type(sendNodeId),type(recvNodeIds))
+                if userFile:
+                    #FTP服务器文件路径
+                    file_dir = "/home/vsftp/ftp/"
+                    # file_dir = "/home/lmx/lmx/"
+                    fire_name = file_dir + userFile.name
+                    # print(fire_name)
+                    with open(fire_name, 'wb') as fp:
+                        for chunk in userFile.chunks():
+                            try:
+                                fp.write(chunk)
+                            except Exception as e:
+                                print("saveUploadFile exception,", e)
+                    res1 = tcp_listen.sendtocli('001,'+userFile.name,int(sendNodeId))
+                    for i in range(len(recvNodeIds)):
+                        res2 = tcp_listen.sendtocli('002',int(recvNodeIds[i]))
+                    res = res1 and res2
+                    print("res1,res2,res:",res1,res2,res)
+                    while(res==False):
+                        time.sleep(1)
+                        res1 = tcp_listen.sendtocli('001,' + userFile.name, int(sendNodeId))
+                        for i in range(len(recvNodeIds)):
+                            res2 = tcp_listen.sendtocli('002', int(recvNodeIds[i]))
+                        res = res1 and res2
+                    if res == True:
+                        saveship_p2p_para(TestName,userFile.name)
+                        t1 = threading.Thread(target=checkrecvfile, args=(userFile.name, TestName))
+                        t1.start()
+    return render(
+        request,
+        "ship/node_communicate.html",
+        {
+            "sendstate": res,
+            "nodeId": onlinens,
+            "form_request":form_request
+        }
+    )
+
+import os
+import time
+def checkrecvfile(filename,testname):
+    # filepath = "/home/lmx/lmx/"
+    file_dir = "/home/vsftp/ftp/"
+    filepath = file_dir+'r'+filename
+    while True:
+        if(os.path.exists(filepath)):
+            handlerDB.saverecvfileresult(testname,filename)
+            print("接收文件已到达")
+            break
+        time.sleep(2)
+
+class shiplistview(generic.ListView):
+    model = models.shipp2ptest
+    template_name = "ship/ship_history.html"
+
+def downloadshipEmulationSource(request, pf):
+    if not request.user.is_authenticated:
+            return HttpResponse("please login in")
+
+    def file_iterator(file_name, chunk_size=512):#用于形成二进制数据
+        with open(file_name,'rb') as f:
+            while True:
+                c = f.read(chunk_size)
+                if c:
+                    yield c
+                else:
+                    break
+        #写入文件
+    filePath = handlerDB.getshipsourcedir(primaryKey = pf)
+    # filePath = "/home/lmx/lmx/"+ filePath
+    filePath = "/home/vsftp/ftp/"+ filePath
+    if len(filePath) == 0:
+        return HttpResponse("error emulation")
+
+    response =StreamingHttpResponse(file_iterator(filePath))   #这里创建返回
+    response['Content-Type'] = 'application/octet-stream'   #注意格式
+    response['Content-Disposition'] = 'attachment;filename=source'   #注意filename 这个是下载后的名字
+    response['Content-Disposition'] +=   '.DA'
+    return response
+
+def downloadshipEmulationResult(request, pf):
+    if not request.user.is_authenticated:
+            return HttpResponse("please login in")
+
+    def file_iterator(file_name, chunk_size=512):#用于形成二进制数据
+        with open(file_name,'rb') as f:
+            while True:
+                c = f.read(chunk_size)
+                if c:
+                    yield c
+                else:
+                    break
+        #写入文件
+    filePath = handlerDB.getshipResultdir(primaryKey = pf)
+    # filePath = "/home/lmx/lmx/" + filePath
+    filePath = "/home/vsftp/ftp/" + filePath
+    if len(filePath) == 0:
+        return HttpResponse("error emulation")
+
+    response =StreamingHttpResponse(file_iterator(filePath))   #这里创建返回
+    response['Content-Type'] = 'application/octet-stream'   #注意格式
+    response['Content-Disposition'] = 'attachment;filename=recv'   #注意filename 这个是下载后的名字
+    response['Content-Disposition'] +=   '.DA'
+    return response
+
+def deleteshipEmulation(request, pf):
+    if not request.user.is_authenticated:
+        return HttpResponse("please login in")
+    handlerDB.deleteshipParam(primaryKey=pf)
+    return HttpResponseRedirect("/nodeapp/shiphistory")

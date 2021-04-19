@@ -1,0 +1,50 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div>
+    <br>
+    <h3>&emsp;通信测试</h3>
+</div>
+<div id = "uan" style="margin: 20px;text-index: inherit;">
+<form action="{% url 'nodetest' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div>
+                {{form_request.TestName.label}}:&nbsp;{{form_request.TestName}}
+                <span style="color:red">
+                {{form_request.errors.TestName.0}}
+                </span>
+    </div>
+    <div>
+        请输入仿真原始数据文件:
+        <input type="file" name = "emuFile">
+    </div>
+
+    <hr>
+
+    <div>
+        请选择发射节点：
+        <select name = "sendNodeId" size="1">
+            {% for node in nodeId %}
+            <option value = "{{node}}">第{{node}}节点</option>
+            {% endfor %}
+        </select>
+    </div>
+    <br>
+    <div>
+        请选择接收节点:
+        <select name = "recvNodeIds" multiple = "multiple" size="1">
+            {% for node in nodeId %}
+            <option value = "{{node}}">第{{node}}节点</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <input type="submit" value = "通信测试">
+    </div>
+    <div>发送状态：{{sendstate}}</div>
+</form>
+
+</div>
+
+{% endblock content %}

@@ -20,6 +20,7 @@ class UAN_Result:
         if self._initFlag == False:
             self._initFlag = True
             self.m_taskIdMap = {}
+            self.datatype = None
 
     def isFinished(self, taskId):
         if taskId in self.m_taskIdMap:
@@ -30,17 +31,33 @@ class UAN_Result:
         bTaskId = taskId.encode(encoding="utf-8")
         
         isFinish = self.isFinished(bTaskId)
-        print("resultLen:", self.m_taskIdMap)
+        # print("result_taskid_map:", self.m_taskIdMap)
         if isFinish:
             res = self.m_taskIdMap[bTaskId]
             self.m_taskIdMap.pop(bTaskId)
             return res
         else:
-            print("taskId error, please input corrected taskId, isFinsh =",isFinish)
+            print("gettaskresult error",isFinish)
         return b''
 
-    def pushTaskResult(self, taskId, result):
+    def getdatatype(self,taskId):
+        bTaskId = taskId.encode(encoding="utf-8")
+        # print("get taskidmap:",self.m_taskIdMap,bTaskId)
+        isFinish = self.isFinished(bTaskId)
+        # print("result_taskid_map:", self.m_taskIdMap)
+        if isFinish:
+            res = self.datatype
+            # self.m_taskIdMap.pop(bTaskId)
+            return res
+        else:
+            print("getdatatype error", isFinish)
+        return b''
+
+
+    def pushTaskResult(self, taskId, result,datatype):
+        self.datatype = datatype
         self.m_taskIdMap[taskId] = result
+        # print("push result taskidmap", self.m_taskIdMap)
         return True
 
 recvResult = UAN_Result()

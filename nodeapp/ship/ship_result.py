@@ -59,4 +59,3 @@ class Ship_Result:
 
         # return True
 
-ship_results = Ship_Result()

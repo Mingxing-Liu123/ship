@@ -63,3 +63,9 @@ class Topic_Form(forms.Form):
         label="话题"
     )
     Content = forms.CharField(widget = forms.Textarea,max_length=250,help_text="talk about") #说了什么事情
+
+class shipp2p_Form(forms.Form):
+    TestName = forms.CharField(
+        error_messages={'required': "实验名称不能为空"},
+        label="实验名称",
+    )

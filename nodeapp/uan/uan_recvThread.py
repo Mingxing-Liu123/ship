@@ -18,12 +18,12 @@ class RecvThread(threading.Thread):
             if self.m_fd == -1:
                 print("fd is error")
                 return
-            #print("block the thread for TCP recv data:", self.m_fd)
+            # print("block the thread for TCP recv data:", self.m_fd)
             recvData = self.m_fd.recv(1024)
+            print("接收到数据:", recvData,len(recvData))
             if not recvData:
                 print("close the connection,fd=",self.m_fd)
                 break
             recvQue.pushBack(recvData)
-            print("---recvQue.len:",recvQue.getQueLen(),recvData)
 
     

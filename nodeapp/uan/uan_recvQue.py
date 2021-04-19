@@ -90,7 +90,7 @@ class ConstHeaderManager:
 
         self.m_fdMap[fd] = cheader
 
-        print("const header, recvNodId:",cheader.m_sendID, "m_recvNodesNum:",cheader.m_recvNodesNum)
+        # print("const header, recvNodId:",cheader.m_sendID, "m_recvNodesNum:",cheader.m_recvNodesNum)
 
         return True
     
@@ -110,9 +110,14 @@ class ConstHeaderManager:
         if fd not in self.m_fdMap:
             return res
         res = self.m_fdMap[fd].m_sendContentLen
-
         return res
 
+    def getdatatype(self,fd):
+        res = -1
+        if fd not in self.m_fdMap:
+            return res
+        res = self.m_fdMap[fd].m_dataType
+        return res
 
 class VarHeaderManager:
     _instance  = None

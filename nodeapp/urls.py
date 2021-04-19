@@ -96,12 +96,23 @@ urlpatterns+=[
 
 # ship
 urlpatterns+=[
-    path(r'viewpoision', views.viewpoision, name = "viewpoision"),
+    # path(r'viewpoision', views.viewpoision, name = "viewpoision"),
     path(r'poirefresh', views.poirefresh, name = "datarefresh"),
     path(r'viewonlinenodemsg/msgrefresh', views.msgarefresh, name = "msgdatarefresh"),
     path(r'viewonlinenodemsg/sendcommand', views.sendcommand, name = "sendcommand"),
     path(r'viewonlinenodemsg/sendarea', views.sendarea, name = "sendarea"),
+    path(r'viewonlinenodemsg/sendpointroute', views.sendpointroute, name = "sendpointroute"),
     path(r'viewonlinenodemsg/sendlineroute', views.sendlineroute, name = "sendlineroute"),
     path(r'viewonlinenodemsg/<int:nodeId>', views.onlinenodemsg, name = "onlinenodemsg"),
 ]
-#2
+
+#nodetest
+urlpatterns+=[
+    path(r'nodetest', views.nodetest, name = "nodetest"),
+    path(r'shiphistory', views.shiplistview.as_view(), name="shiphistory"),
+    path(r'shipHistory/<int:pf>/downloadSource', views.downloadshipEmulationSource, name = "shipSourceDownload"),
+    path(r'shipHistory/<int:pf>/downloadResult', views.downloadshipEmulationResult, name = "shipResultDownload"),
+    path(r'shipHistory/<int:pf>/delete', views.deleteshipEmulation, name = "ship_delete"),
+
+
+]

@@ -13,18 +13,18 @@
       <th>&emsp;&emsp;source file&emsp;&emsp;</th>
       <th>&emsp;&emsp;status&emsp;&emsp;</th>
       <th>&emsp;&emsp;delete&emsp;&emsp;</th>
-    </tr>
+    </tr><o></o>
   {% for aEntry in uanemulation_list %}
     <tr>
         <td>{{aEntry.emuTime}}</td>
         <td>
 		<a href="{% url 'uanSourceDownload' pf=aEntry.id %}">
-                {{aEntry.srcFilePath}}</td>
+                下载</td>
             </a>
 	{% if aEntry.emuFilesPath is None  %}
-          <td>Running</td>
+          <td>运行中</td>
 	{% else %}
-	<td><a href = "{% url 'uanResultDownload' pf=aEntry.id %}">Success</a></td>
+	<td><a href = "{% url 'uanResultDownload' pf=aEntry.id %}">下载</a></td>
 	{% endif %}
 	<td>
 		<a href = "{% url 'uan_delete' pf=aEntry.id %}">delete</a>

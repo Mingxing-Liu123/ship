@@ -67,8 +67,10 @@ class ConfigCenter:
             self.m_isCreated = True
             self.m_nodeIDs = []
             self.m_nodeIDMap = {}
-            self.m_resultDir = ""
-            self.m_resultZipPath = ""
+            self.m_sendDir = ""
+            self.m_sendzipfile = ""
+            self.m_recvDir = ""
+            self.m_recvZipDir = ""
             self.readConfig() # init
             
 
@@ -85,8 +87,10 @@ class ConfigCenter:
             if nodeIDstr in configDict:
                 self.m_nodeIDMap[nodeIDstr] = configDict[nodeIDstr] 
 
-        self.m_resultDir = configDict["resultDir"]
-        self.m_resultZipDir = configDict["resultZipDir"]
+        self.m_sendDir = configDict["sendDir"]
+        self.m_sendzipfile = configDict["sendzipDir"]
+        self.m_recvDir = configDict["recDir"]
+        self.m_recvZipDir = configDict["recvZipDir"]
 
     def getNodeAccount(self, nodeIDint):
         resAccount = {}
@@ -102,10 +106,14 @@ class ConfigCenter:
         return self.getNodeAccount(0)
     def getNodes(self):
         return self.m_nodeIDs
-    def getResultDir(self):
-        return self.m_resultDir
-    def getResultZipDir(self):
-        return self.m_resultZipDir
+    def getsendDir(self):
+        return self.m_sendDir
+    def getsendzipdir(self):
+        return self.m_sendzipfile
+    def getrecvresultDir(self):
+        return self.m_recvDir
+    def getrecvZipDir(self):
+        return self.m_recvZipDir
 
 """
 上传文件，记录下来
@@ -119,12 +127,12 @@ class saveUANEmulationResultToFile(object):
     def save(self):
         self.__setDir()
         self.__saveReadMe()
-        ret = self. __saveUploadFile()
+        ret = self.__saveUploadFile()
         return ret
 
     def __setDir(self):
         config = ConfigCenter()
-        self.m_dir = config.getResultDir()
+        self.m_dir = config.getsendDir()
         
         if self.m_dir[-1] != '/':
             self.m_dir = self.m_dir + "/"
@@ -133,6 +141,7 @@ class saveUANEmulationResultToFile(object):
         
         if self.m_dir[-1] != '/':
             self.m_dir = self.m_dir + "/"
+        # print("self.m_dir:", self.m_dir)
 
     def __saveReadMe(self):
         readMeName = self.m_dir + "readme.md"
@@ -149,6 +158,7 @@ class saveUANEmulationResultToFile(object):
         with open(readMeName, "w+") as f:
             for aLine in readMeContents:
                 f.write(aLine)
+        # print("readmedir:",readMeName)
 
     def __saveUploadFile(self):
         suffix = self.m_requestFile.name.split('.')[-1]
@@ -162,39 +172,62 @@ class saveUANEmulationResultToFile(object):
                 except Exception as e:
                     print("saveUploadFile exception,", e)
                     return "" # error
+        # print("sourcefilename",fileName)
         return fileName
-
+import os
 class UanResultZip(object):
     def __init__(self, taskId):
         self.m_taskId = taskId
         self.m_zipFilePath = ""
+        self.m_sendfirezipdir = ""
         self.__initClass()
 
     def hasZipFile(self):
-        import os
         return os.path.exists(self.m_zipFilePath)
+    def hasendzipfile(self):
+        return os.path.exists(self.m_sendfirezipdir)
 
-    def createZipFile(self):
-        config = ConfigCenter()
-        resultPath = config.getResultDir()
-        if resultPath[-1] != '/':
-            resultPath = resultPath + '/'
-        resultPath = resultPath + self.m_taskId
-        self.__makeZip(resultPath, self.m_zipFilePath)
+    def createZipFile(self,flag = None):
+        #recvresult下载
+        if flag == 1:
+            config = ConfigCenter()
+            resultPath = config.getrecvresultDir()
+            if resultPath[-1] != '/':
+                resultPath = resultPath + '/'
+            resultPath = resultPath + self.m_taskId
+            self.__makeZip(resultPath, self.m_zipFilePath)
 
-        return self.m_zipFilePath
-        
+            return self.m_zipFilePath
+        #源文件下载
+        else:
+            config = ConfigCenter()
+            resultPath = config.getsendDir()
+            if resultPath[-1] != '/':
+                resultPath = resultPath + '/'
+            resultPath = resultPath + self.m_taskId
+            self.__makeZip(resultPath, self.m_sendfirezipdir)
+            return self.m_sendfirezipdir
+
     def getZipFileDir(self):
         if self.hasZipFile():
             return self.m_zipFilePath
         return ""
 
+    def getsendZipFileDir(self):
+        if self.hasendzipfile():
+            return self.m_sendfirezipdir
+        return ""
+
     def __initClass(self):
         config = ConfigCenter()
-        self.m_zipFilePath = config.getResultZipDir()
+        self.m_zipFilePath = config.getrecvZipDir()
+        self.m_sendfirezipdir = config.getsendzipdir()
         if self.m_zipFilePath[-1] != '/':
             self.m_zipFilePath = self.m_zipFilePath + "/"
+        if self.m_zipFilePath[-1] != '/':
+            self.m_sendfirezipdir = self.m_sendfirezipdir + "/"
         self.m_zipFilePath = self.m_zipFilePath + self.m_taskId + ".zip"
+        self.m_sendfirezipdir = self.m_sendfirezipdir + self.m_taskId + ".zip"
 
     def __makeZip(self, sourceDir, outputFile):
         import os, zipfile
@@ -204,3 +237,51 @@ class UanResultZip(object):
             zf.write(filePath, aFile)
         zf.close()
 
+# 将在线节点列表放入文件中，不知道为啥在阿里云服务器单例类总是创建多个，本地没事
+def saveonlinnodes(nodeid = 1):
+    with open('onlinenodes.txt', "a+") as f:
+        f.write(str(nodeid))
+        f.seek(0)
+        l = f.readlines()
+        if len(l[0]) ==1:
+            # print("xxxx")
+            f.close()
+        else:
+            x = set(l[0])
+            for i in range(1,len(l[0])):
+                x.update(l[0][i])
+                s = "".join(list(x))
+            print("onlinenodes.txt s:",s,type(s))
+            f.seek(0)
+            f.truncate()
+            # b = bytes(s,encoding="utf-8")
+            f.write(s)
+            f.close()
+
+def get_from_file_nodes():
+    plist = []
+    with open('onlinenodes.txt', "r") as f:
+        l = f.readlines()
+        # print("poitext:",l,type(l))
+        if len(l)==0:
+            f.close()
+        else:
+            for i in range(len(l[0])):
+                plist.append(int(l[0][i]))
+            f.close()
+        # print("poilistfire plist:",plist,plist[0],type(plist[0]))
+        return plist
+
+def delnode(nodeid  =None):
+    # print("删除node：",nodeid,type(nodeid))
+    with open('onlinenodes.txt', "a+") as f:
+        f.seek(0)
+        l = f.readlines()
+        data  =l[0].split(str(nodeid))
+        # print("下线 data:", data,type(data))
+        node_list = ''.join(data)
+        # print("删除后的filedate：",node_list)
+        f.seek(0)
+        f.truncate()
+        f.write(node_list)
+        f.close()

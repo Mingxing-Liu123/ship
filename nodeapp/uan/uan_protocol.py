@@ -25,7 +25,7 @@ class ConstHeader:
         res += self.m_recvNodesNum.to_bytes(length = 1, byteorder = "big")
         res += self.m_sendFileNameLen.to_bytes(length = 1, byteorder = "big")
         res += self.m_sendContentLen.to_bytes(length = 4, byteorder = "big")
-        
+
         return res
 
     

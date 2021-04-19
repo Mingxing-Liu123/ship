@@ -9,15 +9,74 @@
 {% endblock %}
 
 {% block content %}
+    <div id="nodemsg"
+         style="float: left;
+                width: 30%;
+                background-color: #EBF5FB;
+                border:1px solid black;
+                border-bottom-style:none;
+                height:500px;">
+            <h3 style="margin-left: 4%;">
+                在线节点
+                <br>
+                {% for nodeId in onlineNodes %}
+                <label style="display: inline-block;line-height: 2;">
+	&emsp;&emsp;            <a href= "{% url 'onlinenodemsg' nodeId=nodeId %}" >
+                    节点{{nodeId}}
+                </a>
+                </label>
+                <br>
+                {% endfor %}
+            </h3>
+<!--        <div id = "uanEmulation">-->
+<!--<form action="" method="POST" enctype="multipart/form-data">-->
+<!--    {% csrf_token %}-->
+<!--    <div>-->
+<!--        请输入仿真原始数据文件:-->
+<!--        <input type="file" name = "emuFile">-->
+<!--    </div>-->
+<!--    <hr>-->
+<!--    <div>-->
+<!--        请选择发射节点：-->
+<!--        <select name = "sendNodeId" size="3">-->
+<!--            {% for node in onlineNodes %}-->
+<!--            <option value = "{{node}}">第{{node}}节点</option>-->
+<!--            {% endfor %}-->
+<!--        </select>-->
+<!--    </div>-->
+<!--    <br>-->
+<!--    <div>-->
+<!--        请选择接收节点:-->
+<!--        <select name = "recvNodeIds" multiple = "multiple" size="3">-->
+<!--            {% for node in onlineNodes %}-->
+<!--            <option value = "{{node}}">第{{node}}节点</option>-->
+<!--            {% endfor %}-->
+<!--        </select>-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <input type="submit" value = "开始仿真">-->
+<!--    </div>-->
+<!--</form>-->
 
-    <div id = "terminal"></div>
+<!--</div>-->
+    </div>
+    <div id = "terminal"
+         style="float: left;
+                width: 65%;
+                background-color: #EBF5FB;
+                border:1px solid black;
+                border-bottom-style:none;
+                border-left-style:none;
+                height:500px;">
+    </div>
 
     <script>
         var socket = new WebSocket('ws://' + window.location.host + '/ws/nodeapp/terminal_routing/' + {{nodeId}});
         socket.onopen = function () {
 
             var term = new Terminal();
-            term.open(document.getElementById('terms'));
+            // term.open(document.getElementById('terms'));
+            term.open(document.getElementById('terminal'));
 
             term.on('data', function (data) { // 输入数据
                 var Date = window.event.keyCode;
