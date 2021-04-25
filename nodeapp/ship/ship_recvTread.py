@@ -40,13 +40,12 @@ def recv(client_socket, ip_port):
         client_text = client_socket.recv(150).decode('ascii')
         # 如果接收的消息长度不为0，则将添加到消息队列并处理
         if client_text:
-            # print("[客户端消息]", ip_port, ":", client_text)
+            print("[客户端消息]", ip_port, ":", client_text)
             data_str = delrest(client_text)
             if data_str == None:
                 continue
             nodeid = parse_pos(data_str)
             if not flag:
-                print("save nodeid-fd")
                 flag=True
                 saveonlinnodes(nodeid)
                 shipRecvQue.get_instance().fdmap[nodeid] = client_socket
@@ -72,23 +71,41 @@ def delrest(datastr = None):
         return None
     else:
         return dstr[0:e_pos]
-#解析数据 格式：$,nodeid,lat,lng,*
+
+#解析数据 格式：$,nodeid,datatype,lat,lng,*
 def parse_pos(data_str):
     d_str = data_str
     pos = d_str.find(',')
     d_str = d_str[pos+1:]
     pos = d_str.find(',')
-    # print("d_str",d_str[0:pos])
     node_id = int(d_str[0:pos])
     d_str = d_str[pos+1:]
     pos = d_str.find(',')
-    lat = float(d_str[0:pos])
+    datatype=int(d_str[0:pos])
     d_str = d_str[pos + 1:]
-    pos = d_str.find(',')
-    lng = float(d_str[0:pos])
-    plist = [None]*3
-    plist[0] = node_id
-    plist[1] = lat
-    plist[2] = lng
-    saveshippos(plist)
+    # 经纬度信息:
+    if datatype==1:
+        pos =d_str.find(',')
+        lat = float(d_str[0:pos])
+        d_str = d_str[pos + 1:]
+        pos = d_str.find(',')
+        lng = float(d_str[0:pos])
+        plist = [None]*3
+        plist[0] = node_id
+        plist[1] = lat
+        plist[2] = lng
+        saveshippos(plist)
+    # 通知信息:
+    if datatype==2:
+        pos =d_str.find(',')
+        recvnodeid=int(d_str[0:pos])
+        d_str = d_str[pos + 1:]
+        pos =d_str.find(',')
+        file_size=d_str[0:pos]
+        d_str=d_str[pos+1:]
+        pos =d_str.find(',')
+        file_name=d_str[0:pos]
+        msg="002,"+str(file_size)+','+str(file_name)
+        res=shipRecvQue.get_instance().fdmap[recvnodeid].send(msg.encode())
+        print("通知发送:",res,len(msg))
     return node_id

@@ -16,9 +16,7 @@ class shipRecvQue:
 
     @classmethod
     def get_instance(cls):
-        print("get_instance1")
         if not cls.__instance:
-            print("get_instance2")
             cls.lock.acquire()
             if not cls.__instance:
                 cls.__instance = shipRecvQue()

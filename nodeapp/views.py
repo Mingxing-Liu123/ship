@@ -848,9 +848,8 @@ def nodetest(request):
                 userFile = request.FILES.get("emuFile")
                 sendNodeId = request.POST.get("sendNodeId")
                 recvNodeIds = request.POST.getlist("recvNodeIds")
-                # print("sendnode,recvnodes",sendNodeId,recvNodeIds)
-                # print("uploadfile:",userFile)
-                # print(userFile.name.split('.')[-1],type(sendNodeId),type(recvNodeIds))
+                print("sendnode,recvnodes",sendNodeId,recvNodeIds,recvNodeIds[0])
+
                 if userFile:
                     #FTP服务器文件路径
                     file_dir = "/home/vsftp/ftp/"
@@ -863,17 +862,8 @@ def nodetest(request):
                                 fp.write(chunk)
                             except Exception as e:
                                 print("saveUploadFile exception,", e)
-                    res1 = tcp_listen.sendtocli('001,'+userFile.name,int(sendNodeId))
-                    for i in range(len(recvNodeIds)):
-                        res2 = tcp_listen.sendtocli('002',int(recvNodeIds[i]))
-                    res = res1 and res2
-                    print("res1,res2,res:",res1,res2,res)
-                    while(res==False):
-                        time.sleep(1)
-                        res1 = tcp_listen.sendtocli('001,' + userFile.name, int(sendNodeId))
-                        for i in range(len(recvNodeIds)):
-                            res2 = tcp_listen.sendtocli('002', int(recvNodeIds[i]))
-                        res = res1 and res2
+                    # 数据格式:001,fileneme,recvnodeid
+                    res = tcp_listen.sendtocli('001,'+userFile.name+','+str(recvNodeIds[0]),int(sendNodeId))
                     if res == True:
                         saveship_p2p_para(TestName,userFile.name)
                         t1 = threading.Thread(target=checkrecvfile, args=(userFile.name, TestName))
@@ -891,10 +881,10 @@ def nodetest(request):
 import os
 import time
 def checkrecvfile(filename,testname):
-    # filepath = "/home/lmx/lmx/"
+    # file_dir = "/home/lmx/lmx/"
     file_dir = "/home/vsftp/ftp/"
     filepath = file_dir+'r'+filename
-    while True:
+    for i in range (30):
         if(os.path.exists(filepath)):
             handlerDB.saverecvfileresult(testname,filename)
             print("接收文件已到达")
