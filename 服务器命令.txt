@@ -1,0 +1,114 @@
+网站域名：http://8.129.210.67:8001/nodeapp/
+服务器name:root
+密码：Lab408408
+阿里云账号：阿星lmx
+开启uwsgi服务：uwsgi --ini  uwsgi.ini
+关闭uwsgi服务：uwsgi --stop uwsgi.pid   或者 pkill -f uwsgi -9
+重载uwsgi服务：uwsgi --reload uwsgi.pid
+uwsgi配置文件：uwsgi.ini：
+[uwsgi]
+chdir = /home/lmx/web_server1/water                
+file = /home/lmx/web_server1/water/water/wsgi.py
+#module = water.wsgi:application 
+socket = 127.0.0.1:8002            
+master = true         
+processes = 4
+max-requests = 5000
+daemonize = /home/lmx/web_server1/water/run.log
+disable-logging = true
+#wsgi-file = water/wsgi.py
+pidfile=/home/lmx/web_server1/water/uwsgi.pid
+
+关闭nginx服务：nginx -s stop
+开启nginx服务：nginx 
+测试配置文件是否正确：nginx -t
+重新加载配置文件：nginx -s reload
+nginx配置文件：
+server {
+    listen 8001;
+    server_name 8.129.210.67;
+    charset utf-8;
+    client_max_body_size 75M;
+ 
+    location /static {
+        #alias /home/lmx/web_server/water/nodeapp/static;
+	alias /home/lmx/web_server1/water/static_new;
+    }
+    
+    location /media {
+        alias /home/lmx/web_server1/water/nodeapp/media;
+    }
+ 
+    location / {
+        uwsgi_pass 127.0.0.1:8002;
+        include /etc/nginx/uwsgi_params;
+    }
+
+ location /ws {
+        proxy_pass http://127.0.0.1:8008;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $server_name;
+  }
+  }
+
+快速安装Django项目所需要的包：pip3 install -r requirements.txt  
+
+
+关闭supervisor:sudo unlink /tmp/ls
+supervisor.sock
+启动supervisor:supervisord -c /etc/supervisord.conf
+使用supervisorctl开启daphne：supervisorctl start daphne
+使用supervisorctl关闭daphne：supervisorctl stop daphne
+查看supervisorc监控的状态：supervisorctl status 
+
+redis服务器：
+
+django（ASGI）配置：
+upstream django {
+    server 127.0.0.1:8002;
+    }
+
+upstream channels-backend {
+    server 127.0.0.1:8008;
+}
+
+server {
+    listen 8001;
+    server_name 8.129.210.67;
+    charset utf-8;
+    client_max_body_size 75M;
+
+    location /static {
+        #alias /home/lmx/web_server/water/nodeapp/static;
+        alias /home/lmx/web_server1/water/static_new;
+    }
+
+    location /media {
+        alias /home/lmx/web_server1/water/nodeapp/media;
+    }
+
+    location / {
+        uwsgi_pass django;
+        include /etc/nginx/uwsgi_params;
+    }
+
+    location /ws {
+        proxy_pass http://channels-backend;
+
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $server_name;
+     }
+  }
+

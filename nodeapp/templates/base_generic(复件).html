@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        {% block title %}
+        <title>水声节点</title>
+        {% endblock %}
+        
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/stylebp.css' %}">
+        
+        <script src="{% static 'js/main.js' %}"></script>
+        <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
+        <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+
+
+    </head>
+
+    <body>
+        <div id="body_preface">
+            <h1>无线声电协同通信测试平台</h1>
+        </div>
+        <div id="container">
+            <nav id="body_home"> <!--菜单栏-->
+                <ul>
+                    <li><a href="{% url 'index' %}" class="actual">主页</a></li>
+                    <li><a href="{% url 'terminalSelector' %}">组网测试</a>
+                        <ul class="xoy_Y_ul">
+                            <li class="xoy_Y"><a href="{% url 'runningsimulation' %}">软件仿真</a></li>
+                            <li class="xoy_Y"><a href="{% url 'hardwareEmulation' %}">硬件仿真</a></li>
+                            {% if user.is_authenticated %}
+                                <li class="xoy_Y"><a href="{% url 'terminalSelector' %}">终端调试</a></li>
+                                <li class="xoy_Y"><a href="{% url 'simulation_history' %}">历史记录</a></li>
+                            {% else %}
+                                <li class="xoy_Y"><a href="{% url 'publichistory' %}">我的仿真</a></li>
+                            {% endif %}
+                        </ul>                   
+                    </li>
+                    <li><a href="{% url 'nodetest' %}">通信测试</a>
+                        <ul class="xoy_Y_ul">
+                            <li class="xoy_Y"><a href="{% url 'viewOnline' %}">实时监测</a></li>
+			                <li class="xoy_Y"><a href="{% url 'ns3Simulation' %}">ns3仿真</a></li>
+			                <li class="xoy_Y"><a href="{% url 'viewUanEmulation' %}">硬件仿真</a></li>
+			                <li class="xoy_Y"><a href="{% url 'uanHistory' %}">我的仿真</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'index' %}">节点测试</a>
+                        <ul class="xoy_Y_ul">
+                            <li class="xoy_Y"><a href="#">实时位置</a></li>
+                            <li class="xoy_Y"><a href="#">远程接收</a></li>
+                            <li class="xoy_Y"><a href="#">远程控制</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'management_list' %}">联系</a></li>  <!--包含反馈-->
+                    <li><a href="{% url 'comment' %}">社区</a>
+                    {% if user.is_authenticated %}
+                        <ul 
+                        class="xoy_Y_ul">
+                            <li class="xoy_Y"><a href="{% url 'my_comment' %}">我的讨论</a></li>
+                        </ul>
+                    {% endif %}
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li style = "float: right"><a href = "#">kang</a>
+                        <ul class = "xoy_Y_ul">
+                            <li class="xoy_Y"><a href="#">个人中心</a></li>
+                            <li class="xoy_Y"><a href="{% url 'logout' %}?next={{request.path}}">退出</a></li>
+                        </ul>
+                    </li>
+                        
+                    {% else %}
+                        <li style="float: right"><a href="{% url 'login' %}?next={{requrest.path}}">登录</a></li>
+                    {% endif %}
+                </ul>
+
+                <div class="content_bottom">&nbsp;</div>
+            </nav>
+
+            <hr style="background-color:#566573;height: 2px;width:96%;border: none;"/>
+            <div id="content"> <!--内容主体--> 
+            {% block content %}
+              
+            {% endblock content %} 
+            </div>
+
+            <hr style="background-color:#566573;height: 2px;width:96%;border: none;clear:both;"/>
+
+        </div>
+        <div style="background:#808f99;text-align: center;clear:both">
+            <p>本网站仅作学习和测试使用,未经许可不得应用于商业用途</p>
+            <p>网页设计制作：小张</p>
+        </div>
+    </body>
+</html>

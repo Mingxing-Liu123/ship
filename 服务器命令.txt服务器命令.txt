@@ -1,0 +1,44 @@
+网站域名：http://8.129.210.67:8001/nodeapp/
+服务器name:root
+密码：Lab408408
+阿里云账号：阿星lmx
+开启uwsgi服务：uwsgi --ini  uwsgi.ini
+关闭uwsgi服务：uwsgi --stop uwsgi.pid   或者 pkill -f uwsgi -9
+重载uwsgi服务：uwsgi --reload uwsgi.pid
+关闭nginx服务：nginx -s stop
+开启nginx服务：nginx 
+快速安装Django项目所需要的包：pip3 install -r requirements.txt  
+安装所需依赖包:pip3 install -r requirements.txt
+以下不需要：
+(apturl==0.5.2 
+Brlapi==0.6.6 
+command-not-found==0.3
+cupshelpers==1.0
+defer==1.0.6
+distro-info===0.18ubuntu0.18.04.1
+language-selector==0.1
+louis==3.5.0
+MarkupSafe==1.0
+pygobject==3.26.1
+python-apt==1.6.5+ubuntu0.3
+ssh-import-id==5.7
+system-service==0.3
+systemd-python==234
+ubuntu-drivers-common==0.0.0
+ufw==0.36
+unattended-upgrades==0.1
+usb-creator==0.3.3
+xkit==0.0.0）
+虚拟环境命令：
+	列出虚拟环境列表：workon 
+	进入虚拟环境：workon+虚拟环境名称 
+	创建虚拟环境：mkvirtualenv --python=python3.6 +虚拟环境名
+	激活环境：workon [venv] #切换环境
+	退出虚拟环境：deactivate 
+	删除环境：rmvirtualenv venv
+	查看当前安装库版本:pip freeze > requirements.txt 
+	列举所有的环境:lsvirtualenv    
+ubuntu所需软件:asbru,filezilla,pycharm
+github加速方法：
+	1.添加到码云gitee，然后下载，添加到码云会有点慢，在码云下载很快
+	2.https://github.com/pingcap/tidb.git在github.com后添加.cnpmjs.org即：https://github.com.cnpmjs.org/pingcap/tidb.git

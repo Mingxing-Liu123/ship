@@ -1,0 +1,39 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+{% if shipp2ptest_list %}
+<div class = "uanMonitor">
+    <br>
+    <h2>我的历史记录</h2>
+</div>
+<table class = "uanMonitor">
+    <tr>
+      <th>&emsp;&emsp;testname&emsp;&emsp;</th>
+      <th>&emsp;&emsp;emuTime&emsp;&emsp;</th>
+      <th>&emsp;&emsp;source file&emsp;&emsp;</th>
+      <th>&emsp;&emsp;status&emsp;&emsp;</th>
+      <th>&emsp;&emsp;delete&emsp;&emsp;</th>
+    </tr>
+  {% for aEntry in shipp2ptest_list %}
+    <tr>
+        <td>{{aEntry.testname}}</td>
+        <td>{{aEntry.testTime}}</td>
+        <td><a href="{% url 'shipSourceDownload' pf=aEntry.id %}">{{aEntry.srcFilePath}} </a></td>
+<!--		<a href="{% url 'uanSourceDownload' pf=aEntry.id %}">-->
+        {% if aEntry.recvFilesPath == '' %}
+        <td class="state">运行中</td>
+        {% else %}
+<!--        <td><a href = "{% url 'uanResultDownload' pf=aEntry.id %}">下载</a></td>-->
+        <td class = "state"><a href = "{% url 'shipResultDownload' pf=aEntry.id %}">{{aEntry.recvFilesPath}}</a></td>
+	    {% endif %}
+<!--	    <td><a href = "{% url 'uan_delete' pf=aEntry.id %}">delete</a></td>-->
+        <td><a href = "{% url 'ship_delete' pf=aEntry.id %}">delete</a></td>
+    </tr>
+  {% endfor %}
+
+</table>
+
+{% endif %}
+
+{% endblock content %}
