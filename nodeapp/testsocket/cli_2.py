@@ -10,7 +10,7 @@ def main():
     tcp_client.connect(('8.129.210.67',6378))
     lat = 23.15780224182429
     lon = 113.3408096369781
-    for index in range(10):
+    for index in range(3):
         time.sleep(2)
         msg = '$,3,1,'
         lat = lat - 0.000151
@@ -19,10 +19,6 @@ def main():
         msg += ','
         msg += (str(lon))[0:11]
         msg += ',*'
-        # for i in range(len(msg2)):
-        #     msg += msg2[i]
-        # length = str(len(msg))
-        # gphpdsendmsg = ('$' + length + ','+'178,$'+  '\r\n').encode('ascii')
         sendmsg = msg.encode('ascii')
         print(sendmsg)
         tcp_client.send(sendmsg)

@@ -27,7 +27,7 @@ def main():
     msg1 = '$,2,2,3,4123,test.txt,*'
     sendmsg1 = msg1.encode('ascii')
     print(sendmsg1)
-    tcp_client.send(sendmsg1)
+    # tcp_client.send(sendmsg1)
     while True:
         recv_data = tcp_client.recv(1024).decode('utf-8')  # .decode('utf-8')       # b'xxxx'
         print(recv_data)

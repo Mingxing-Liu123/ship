@@ -1,6 +1,7 @@
 # -*-coding:utf-8-*-
 import threading
 import socket
+import select
 from nodeapp.ship.ship_recQue import shipRecvQue
 from ..handlerDB import  saveshipdata,saveshippos
 from ..handlerFile import saveonlinnodes,delnode,get_from_file_nodes
@@ -14,24 +15,73 @@ class serthread(threading.Thread):
 
     def run(self):
         # 创建TCP套接字
-        tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # 设置端口复用
-        tcp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
         # 绑定端口
-        tcp_socket.bind(("", self.m_port))
+        s.bind(("", self.m_port))
         # 设置为被动监听状态，128表示最大连接数
-        tcp_socket.listen(128)
+        s.listen(128)
         print("开始监听")
+        # 创建一个epoll对象
+        epoll = select.epoll()
+        # 注册事件到epoll中
+        # epoll.register(fd[, eventmask])
+        # 注意，如果fd已经注册过，则会发生异常
+        # 将创建的套接字添加到epoll的事件监听中
+        epoll.register(s.fileno(), select.EPOLLIN | select.EPOLLET)
+        connections = {}
+        addresses = {}
+        nodeidmp={}
+
         while True:
-            # 等待客户端连接
-            client_socket, ip_port = tcp_socket.accept()
-            print("[新客户端]:", ip_port, "已连接")
-            # 有客户端连接后，创建一个线程将客户端套接字，IP端口传入recv函数，
-            t1 = threading.Thread(target=recv, args=(client_socket, ip_port))
-            # 设置线程守护
-            t1.setDaemon(True)
-            # 启动线程
-            t1.start()
+            # epoll 进行 fd 扫描的地方 -- 未指定超时时间则为阻塞等待
+            epoll_list = epoll.poll()
+            # 对事件进行判断
+            for fd, events in epoll_list:
+                # 如果是socket创建的套接字被激活
+                if fd == s.fileno():
+                    new_socket, new_addr = s.accept()
+                    connections[new_socket.fileno()] = new_socket
+                    addresses[new_socket.fileno()] = new_addr
+
+                    print('有新的客户端到来%s' % str(new_addr))
+                    # 向 epoll 中注册 新socket 的 可读 事件
+                    epoll.register(new_socket.fileno(), select.EPOLLIN | select.EPOLLET)
+                # 如果是客户端发送数据
+                elif events == select.EPOLLIN:
+                    # 从激活 fd 上接收
+                    recvData = connections[fd].recv(1024).decode("utf-8")
+                    if recvData:
+                        print('recv:%s' % recvData)
+                        data_str = delrest(recvData)
+                        if data_str == None:
+                            continue
+                        nodeid = parse_pos(data_str)
+                        if fd in nodeidmp:
+                            continue
+                        saveonlinnodes(nodeid)
+                        nodeidmp[fd]=nodeid
+                        shipRecvQue.get_instance().fdmap[nodeid] = connections[fd]
+                    else:
+                        del shipRecvQue.get_instance().fdmap[nodeidmp[fd]]
+                        delnode(nodeidmp[fd])
+                        epoll.unregister(fd)
+                        connections[fd].close()
+                        print("%s---下线---" % str(addresses[fd]))
+                        del connections[fd]
+                        del addresses[fd]
+                        del nodeidmp[fd]
+
+    # # 等待客户端连接
+            # client_socket, ip_port = tcp_socket.accept()
+            # print("[新客户端]:", ip_port, "已连接")
+            # # 有客户端连接后，创建一个线程将客户端套接字，IP端口传入recv函数，
+            # t1 = threading.Thread(target=recv, args=(client_socket, ip_port))
+            # # 设置线程守护
+            # t1.setDaemon(True)
+            # # 启动线程
+            # t1.start()
 
 #接收函数
 def recv(client_socket, ip_port):
@@ -73,6 +123,7 @@ def delrest(datastr = None):
         return dstr[0:e_pos]
 
 #解析数据 格式：$,nodeid,datatype,lat,lng,*
+#解析数据 格式：$,nodeid,datatype,recvnode,filesize,*
 def parse_pos(data_str):
     d_str = data_str
     pos = d_str.find(',')

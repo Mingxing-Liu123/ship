@@ -251,7 +251,7 @@ def saveonlinnodes(nodeid = 1):
             for i in range(1,len(l[0])):
                 x.update(l[0][i])
                 s = "".join(list(x))
-            print("onlinenodes.txt s:",s,type(s))
+            # print("onlinenodes.txt s:",s,type(s))
             f.seek(0)
             f.truncate()
             # b = bytes(s,encoding="utf-8")
